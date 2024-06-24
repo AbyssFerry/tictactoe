@@ -10,12 +10,23 @@ using namespace std;
 #define HEIGHT_WINDOW 900 // 界面高
 #define WIDTH_CHECKERBOARD 840 // 棋盘宽  要与列数能整除
 #define HEIGHT_CHECKERBOARD 840 // 棋盘高 要与行数能整除
-#define START_CHECKERBOARD_X 300 // 棋盘开始绘制x位置
+#define START_CHECKERBOARD_X 500 // 棋盘开始绘制x位置
 #define START_CHECKERBOARD_Y 25 // 棋盘开始绘制y位置
 #define ROWS_WINDOW 30 // 行数
 #define COLS_WINDOW 30 // 列数
 #define GAME_FRAME 60 // 帧数
 #define WIN_COUNT 5 // 连成多少个就赢
+
+#define TEXT_TITLE 22 // 标题文字占画面高的多少分之一
+#define TEXT_PROMPT 30 // 提示文字占画面高的多少分之一
+#define TEXT_OTHER 35 // 其他文字占画面高的多少分之一
+#define TEXT_ROW 10 // 文本区域行数
+int startTextX; // 文字开始绘制x位置（在标题输出函数中初始化）
+int startTextY; // 文字开始绘制y位置 （在标题输出函数中初始化）
+int textHeight; // 每行文字区域高度 （在标题输出函数中初始化）
+int textWeight; // 每行文字区域宽度 （也就是标题的宽度）
+int textNowRow; // 代表现在文字输出到第几行 （在标题输出函数中初始化）
+
 
 int chessCount;
 double row_size; // 行大小
@@ -61,6 +72,8 @@ void init()
 	start_time = GetTickCount();  // 获取开机到现在的时间
 	chessCount = 0;
 	gameResult = -1;
+
+
 	
 }
 
@@ -135,12 +148,130 @@ void showWinner()
 
 }
 
-void drawText()
+// 返回文字居中所需的x偏移量
+int centeringText(TCHAR *s)
 {
-	settextcolor(COLORREF RGB(198, 86, 105));
+	return (textWeight - textwidth(s)) / 2;
+}
+
+// 绘制标题文字
+void drawTextTitie()
+{
+	LOGFONT f;
+	settextcolor(COLORREF RGB(0, 0, 0));  // 黑色
+	gettextstyle(&f);  // 获取当前文字样式
+
+	f.lfHeight = HEIGHT_WINDOW / TEXT_TITLE;  // 根据比例绘制提示文字的高
+
+	settextstyle(&f);  // 将更改后的样式给文字
+
+	TCHAR s[30];
+	_stprintf_s(s, sizeof(s) / sizeof(TCHAR), _T("来吧开始博弈！！！"));
+
+	// 通过标题初始化位置以及每行文字高度
+	static int firstFlag = true; // 只初始化一次
+	if (firstFlag)
+	{
+		firstFlag = false;  // 只用执行一次设置起始位置
+		textWeight = textwidth(s);
+		startTextX = (START_CHECKERBOARD_X - textWeight) / 2; // 使标题文字位于棋盘左侧空余取余的中间
+		startTextY = startTextX; // 目前先决定y坐标起始像素设置为和x坐标起始像素一样
+		textHeight = (HEIGHT_WINDOW - 2 * startTextY) / TEXT_ROW; // 设置每行文字大小
+	}
+
+	// 每次输出到标题都从0行开始
+	textNowRow = 0;
+
+	outtextxy(startTextX, startTextY + textNowRow * textHeight, s);
+
+}
+
+// 绘制提示文字
+void drawTextPrompt()
+{
+	LOGFONT f;
+	settextcolor(COLORREF RGB(0, 0, 0));  // 黑色
+	gettextstyle(&f);  // 获取当前文字样式
+
+	f.lfHeight = HEIGHT_WINDOW / TEXT_PROMPT;  // 根据比例绘制提示文字的高
+
+	settextstyle(&f);  // 将更改后的样式给文字
+
 	TCHAR s[100];
 	_stprintf_s(s, sizeof(s) / sizeof(TCHAR), _T("目前的棋子是: %s"), chessType == 'O' ? L"白棋" : L"黑棋");
-	outtextxy(0, 0, s);
+	int midowDx = centeringText(s);
+	textNowRow++; // 当前行加一
+	outtextxy(startTextX + midowDx, startTextY + textNowRow * textHeight, s);
+
+}
+
+
+
+// 绘制退一步按钮文字
+void drawTextStepBack()
+{
+	LOGFONT f;
+	settextcolor(COLORREF RGB(0, 0, 0));  // 黑色
+	gettextstyle(&f);  // 获取当前文字样式
+
+	f.lfHeight = HEIGHT_WINDOW / TEXT_OTHER;  // 根据比例绘制提示文字的高
+
+	settextstyle(&f);  // 将更改后的样式给文字
+
+	TCHAR s[100];
+	_stprintf_s(s, sizeof(s) / sizeof(TCHAR), _T("反方向的钟"));
+
+	textNowRow++; // 当前行加一
+	int midowDx = centeringText(s);
+	outtextxy(startTextX + midowDx, startTextY + textNowRow * textHeight, s);
+}
+
+// 绘制进一步按钮文字
+void drawTextStepFront()
+{
+	LOGFONT f;
+	settextcolor(COLORREF RGB(0, 0, 0));  // 黑色
+	gettextstyle(&f);  // 获取当前文字样式
+
+	f.lfHeight = HEIGHT_WINDOW / TEXT_OTHER;  // 根据比例绘制提示文字的高
+
+	settextstyle(&f);  // 将更改后的样式给文字
+
+	TCHAR s[100];
+	_stprintf_s(s, sizeof(s) / sizeof(TCHAR), _T("人要往前看"));
+
+	textNowRow++; // 当前行加一
+	int midowDx = centeringText(s);
+	outtextxy(startTextX + midowDx, startTextY + textNowRow * textHeight, s);
+}
+
+// 绘制重新开始按钮文字
+void drawTextRestart()
+{
+	LOGFONT f;
+	settextcolor(COLORREF RGB(0, 0, 0));  // 黑色
+	gettextstyle(&f);  // 获取当前文字样式
+
+	f.lfHeight = HEIGHT_WINDOW / TEXT_OTHER;  // 根据比例绘制提示文字的高
+
+	settextstyle(&f);  // 将更改后的样式给文字
+
+	TCHAR s[100];
+	_stprintf_s(s, sizeof(s) / sizeof(TCHAR), _T("不服重来"));
+
+	textNowRow++; // 当前行加一
+	int midowDx = centeringText(s);
+	outtextxy(startTextX + midowDx, startTextY + textNowRow * textHeight, s);
+}
+
+// 绘制文本
+void drawText()
+{
+	drawTextTitie(); // 这个必须在第一因为文字起始位置是在这个里面设置的
+	drawTextPrompt();
+	drawTextStepBack();
+	drawTextStepFront();
+	drawTextRestart();
 }
 
 
@@ -173,6 +304,7 @@ void gameRand()
 	}
 }
 
+// 检测棋子是否越界
 bool isOverBorder(int & row, int &y)
 {
 	if (row < 0 || row >= ROWS_WINDOW) return true;
