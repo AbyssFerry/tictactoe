@@ -12,15 +12,18 @@ using namespace std;
 #define HEIGHT_CHECKERBOARD 840 // 棋盘高 要与行数能整除
 #define START_CHECKERBOARD_X 500 // 棋盘开始绘制x位置
 #define START_CHECKERBOARD_Y 25 // 棋盘开始绘制y位置
-#define ROWS_WINDOW 30 // 行数
-#define COLS_WINDOW 30 // 列数
+#define ROWS_WINDOW 20 // 行数   标准五子棋是15x15
+#define COLS_WINDOW 20 // 列数  
 #define GAME_FRAME 60 // 帧数
 #define WIN_COUNT 5 // 连成多少个就赢
+/*-----------------------------------------------------*/
 
 #define TEXT_TITLE 22 // 标题文字占画面高的多少分之一
 #define TEXT_PROMPT 30 // 提示文字占画面高的多少分之一
 #define TEXT_OTHER 35 // 其他文字占画面高的多少分之一
 #define TEXT_ROW 10 // 文本区域行数
+/*-----------------------------------------------------*/
+
 int startTextX; // 文字开始绘制x位置（在标题输出函数中初始化）
 int startTextY; // 文字开始绘制y位置 （在标题输出函数中初始化）
 int textHeight; // 每行文字区域高度 （在标题输出函数中初始化）
@@ -28,7 +31,7 @@ int textWeight; // 每行文字区域宽度 （也就是标题的宽度）
 int textNowRow; // 代表现在文字输出到第几行 （在标题输出函数中初始化）
 
 
-int chessCount;
+int chessCount; // 棋子数量用于平局判定
 double row_size; // 行大小
 double col_size; // 列大小
 int mouseX, mouseY;  // 鼠标位置
@@ -37,13 +40,47 @@ char chessType; // 第一步棋的类型
 bool isClick; // 是否有鼠标点击
 bool running = true; // 游戏是否结束
 int gameResult; // 0 平局， 1 O赢， 2 X赢
-DWORD start_time;
-DWORD end_time;
+LOGFONT gameTextType; // 游戏文本输出样式类型
+TCHAR* nowText; // 接受文本样式参数返回内容
+DWORD start_time; 
+DWORD end_time; // 和start_time 实现帧率控制 
+/*-----------------------------------------------------*/
 
 // 储存棋子位置的数组
 char gameBoard[ROWS_WINDOW][COLS_WINDOW];
 
-// 初始化
+
+int main(); // 主函数
+void init(); // 初始化
+void gamesleep(); // 控制帧率
+void gameRand(); // 读取数据
+void gameProcess(); // 数据处理
+void gameDraw(); // 渲染
+/*-----------------------------------------------------*/
+
+bool gameOver(int row, int col); // 检测是否结束
+int chessSum(int row, int col, int dx, int dy); // 检测是否胜利
+bool isOverBorder(int& row, int& y); // 检测棋子是否越界
+/*-----------------------------------------------------*/
+
+int centeringText(TCHAR* s); // 返回文字居中所需的x偏移量
+
+void drawData(); // 绘制数据
+void drawText(); // 绘制文本
+TCHAR* setGameTextType(const TCHAR content[100] = _T("默认输出"), COLORREF colorRGB = RGB(0, 0, 0), double height = 10); // 设置文本样式参数
+void drawTextTitie(); // 绘制标题文字
+void drawTextRestart(); // 绘制重新开始按钮文字
+void drawTextStepFront(); // 绘制进一步按钮文字
+void drawTextStepBack(); // 绘制退一步按钮文字
+void drawTextPrompt(); // 绘制提示文字
+void showWinner(); // 绘制输赢画面
+void drawCircle(int x, int y, int r); // 绘制棋子画圆
+void drawGridding(); // 绘制网格
+/*-----------------------------------------------------*/
+
+
+
+
 void init()
 {
 	initgraph(WIDTH_WINDOW, HEIGHT_WINDOW);
@@ -154,26 +191,31 @@ int centeringText(TCHAR *s)
 	return (textWeight - textwidth(s)) / 2;
 }
 
+TCHAR* setGameTextType(const TCHAR content[100], COLORREF colorRGB, double height)
+{
+	settextcolor(colorRGB);  // 黑色
+	gettextstyle(&gameTextType);  // 获取当前文字样式
+
+	gameTextType.lfHeight = height;  // 根据比例绘制提示文字的高
+
+	settextstyle(&gameTextType);  // 将更改后的样式给文字
+
+	static TCHAR s[100]; // 储存内容数组，初始化一次就行，以后都只要赋值
+	_stprintf_s(s, sizeof(s) / sizeof(TCHAR), _T("%s"), content);
+	return s;
+}
+
 // 绘制标题文字
 void drawTextTitie()
 {
-	LOGFONT f;
-	settextcolor(COLORREF RGB(0, 0, 0));  // 黑色
-	gettextstyle(&f);  // 获取当前文字样式
-
-	f.lfHeight = HEIGHT_WINDOW / TEXT_TITLE;  // 根据比例绘制提示文字的高
-
-	settextstyle(&f);  // 将更改后的样式给文字
-
-	TCHAR s[30];
-	_stprintf_s(s, sizeof(s) / sizeof(TCHAR), _T("来吧开始博弈！！！"));
+	nowText = setGameTextType(L"来吧开始博弈！！！", RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_TITLE);
 
 	// 通过标题初始化位置以及每行文字高度
 	static int firstFlag = true; // 只初始化一次
 	if (firstFlag)
 	{
 		firstFlag = false;  // 只用执行一次设置起始位置
-		textWeight = textwidth(s);
+		textWeight = textwidth(nowText);
 		startTextX = (START_CHECKERBOARD_X - textWeight) / 2; // 使标题文字位于棋盘左侧空余取余的中间
 		startTextY = startTextX; // 目前先决定y坐标起始像素设置为和x坐标起始像素一样
 		textHeight = (HEIGHT_WINDOW - 2 * startTextY) / TEXT_ROW; // 设置每行文字大小
@@ -182,26 +224,21 @@ void drawTextTitie()
 	// 每次输出到标题都从0行开始
 	textNowRow = 0;
 
-	outtextxy(startTextX, startTextY + textNowRow * textHeight, s);
+	outtextxy(startTextX, startTextY + textNowRow * textHeight, nowText);
 
 }
 
 // 绘制提示文字
 void drawTextPrompt()
 {
-	LOGFONT f;
-	settextcolor(COLORREF RGB(0, 0, 0));  // 黑色
-	gettextstyle(&f);  // 获取当前文字样式
+	static TCHAR tempText [100]; // 用于拼接
+	_stprintf_s(tempText, sizeof(tempText) / sizeof(TCHAR), _T("目前的棋子是: %s"), chessType == 'O' ? L"白棋" : L"黑棋");
+	nowText = setGameTextType(tempText, RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_PROMPT);
 
-	f.lfHeight = HEIGHT_WINDOW / TEXT_PROMPT;  // 根据比例绘制提示文字的高
 
-	settextstyle(&f);  // 将更改后的样式给文字
-
-	TCHAR s[100];
-	_stprintf_s(s, sizeof(s) / sizeof(TCHAR), _T("目前的棋子是: %s"), chessType == 'O' ? L"白棋" : L"黑棋");
-	int midowDx = centeringText(s);
+	int midowDx = centeringText(nowText); // 居中偏量返回
 	textNowRow++; // 当前行加一
-	outtextxy(startTextX + midowDx, startTextY + textNowRow * textHeight, s);
+	outtextxy(startTextX + midowDx, startTextY + textNowRow * textHeight, nowText);
 
 }
 
@@ -210,58 +247,33 @@ void drawTextPrompt()
 // 绘制退一步按钮文字
 void drawTextStepBack()
 {
-	LOGFONT f;
-	settextcolor(COLORREF RGB(0, 0, 0));  // 黑色
-	gettextstyle(&f);  // 获取当前文字样式
-
-	f.lfHeight = HEIGHT_WINDOW / TEXT_OTHER;  // 根据比例绘制提示文字的高
-
-	settextstyle(&f);  // 将更改后的样式给文字
-
-	TCHAR s[100];
-	_stprintf_s(s, sizeof(s) / sizeof(TCHAR), _T("反方向的钟"));
+	nowText = setGameTextType(L"反方向的钟", RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_OTHER);
+	
 
 	textNowRow++; // 当前行加一
-	int midowDx = centeringText(s);
-	outtextxy(startTextX + midowDx, startTextY + textNowRow * textHeight, s);
+	int midowDx = centeringText(nowText);
+	outtextxy(startTextX + midowDx, startTextY + textNowRow * textHeight, nowText);
 }
 
 // 绘制进一步按钮文字
 void drawTextStepFront()
 {
-	LOGFONT f;
-	settextcolor(COLORREF RGB(0, 0, 0));  // 黑色
-	gettextstyle(&f);  // 获取当前文字样式
-
-	f.lfHeight = HEIGHT_WINDOW / TEXT_OTHER;  // 根据比例绘制提示文字的高
-
-	settextstyle(&f);  // 将更改后的样式给文字
-
-	TCHAR s[100];
-	_stprintf_s(s, sizeof(s) / sizeof(TCHAR), _T("人要往前看"));
+	nowText = setGameTextType(L"人要往前看", RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_OTHER);
 
 	textNowRow++; // 当前行加一
-	int midowDx = centeringText(s);
-	outtextxy(startTextX + midowDx, startTextY + textNowRow * textHeight, s);
+	int midowDx = centeringText(nowText);
+	outtextxy(startTextX + midowDx, startTextY + textNowRow * textHeight, nowText);
 }
 
 // 绘制重新开始按钮文字
 void drawTextRestart()
 {
-	LOGFONT f;
-	settextcolor(COLORREF RGB(0, 0, 0));  // 黑色
-	gettextstyle(&f);  // 获取当前文字样式
+	nowText = setGameTextType(L"不服重来", RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_OTHER);
 
-	f.lfHeight = HEIGHT_WINDOW / TEXT_OTHER;  // 根据比例绘制提示文字的高
-
-	settextstyle(&f);  // 将更改后的样式给文字
-
-	TCHAR s[100];
-	_stprintf_s(s, sizeof(s) / sizeof(TCHAR), _T("不服重来"));
 
 	textNowRow++; // 当前行加一
-	int midowDx = centeringText(s);
-	outtextxy(startTextX + midowDx, startTextY + textNowRow * textHeight, s);
+	int midowDx = centeringText(nowText);
+	outtextxy(startTextX + midowDx, startTextY + textNowRow * textHeight, nowText);
 }
 
 // 绘制文本
