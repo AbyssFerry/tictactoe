@@ -6,8 +6,8 @@
 
 using namespace std;
 
-#define WIDTH_WINDOW 1400 // 界面宽
-#define HEIGHT_WINDOW 900 // 界面高
+#define WIDTH_WINDOW 1400 // 界面宽 1400
+#define HEIGHT_WINDOW 900 // 界面高 900
 #define WIDTH_CHECKERBOARD 840 // 棋盘宽  要与列数能整除
 #define HEIGHT_CHECKERBOARD 840 // 棋盘高 要与行数能整除
 #define START_CHECKERBOARD_X 500 // 棋盘开始绘制x位置
@@ -63,7 +63,8 @@ int chessSum(int row, int col, int dx, int dy); // 检测是否胜利
 bool isOverBorder(int& row, int& y); // 检测棋子是否越界
 /*-----------------------------------------------------*/
 
-int centeringText(TCHAR* s); // 返回文字居中所需的x偏移量
+int centeringLRText(TCHAR* s); // 返回文字居中所需的x偏移量
+int centeringHWText(TCHAR* s); // 返回文字居中所需的y偏移量
 
 void drawData(); // 绘制数据
 void drawText(); // 绘制文本
@@ -169,7 +170,7 @@ void drawData()
 
 void showWinner()
 {
-	// 胜利提示
+	// 胜利提示  GetHWnd用于调用系统弹窗
 	if (gameResult == 0)
 	{
 		MessageBox(GetHWnd(), _T("玩家平局"), _T("胜负情况"), MB_OK);
@@ -186,9 +187,23 @@ void showWinner()
 }
 
 // 返回文字居中所需的x偏移量
-int centeringText(TCHAR *s)
+int centeringLRText(TCHAR *s)
 {
 	return (textWeight - textwidth(s)) / 2;
+}
+
+int centeringHWText(TCHAR* s)
+{
+	return (textHeight - textheight(s)) / 2;
+}
+
+void outTextMiddow(int textNowRow)
+{
+	static int midowDx; 
+	static int midowDy;
+	midowDx = centeringLRText(nowText); // 居中x偏量返回
+	midowDy = centeringHWText(nowText); // 居中y偏量返回
+	outtextxy(startTextX + midowDx, startTextY + textNowRow * textHeight + midowDy, nowText);
 }
 
 TCHAR* setGameTextType(const TCHAR content[100], COLORREF colorRGB, double height)
@@ -218,7 +233,7 @@ void drawTextTitie()
 		textWeight = textwidth(nowText);
 		startTextX = (START_CHECKERBOARD_X - textWeight) / 2; // 使标题文字位于棋盘左侧空余取余的中间
 		startTextY = startTextX; // 目前先决定y坐标起始像素设置为和x坐标起始像素一样
-		textHeight = (HEIGHT_WINDOW - 2 * startTextY) / TEXT_ROW; // 设置每行文字大小
+		textHeight = (HEIGHT_WINDOW - 2 * startTextY) / TEXT_ROW; // 设置文字区域每行大小
 	}
 
 	// 每次输出到标题都从0行开始
@@ -236,9 +251,10 @@ void drawTextPrompt()
 	nowText = setGameTextType(tempText, RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_PROMPT);
 
 
-	int midowDx = centeringText(nowText); // 居中偏量返回
 	textNowRow++; // 当前行加一
-	outtextxy(startTextX + midowDx, startTextY + textNowRow * textHeight, nowText);
+	int midowDx = centeringLRText(nowText); // 居中x偏量返回
+	int midowDy = centeringHWText(nowText); // 居中y偏量返回
+	outtextxy(startTextX + midowDx, startTextY + textNowRow * textHeight + midowDy, nowText);
 
 }
 
@@ -251,8 +267,9 @@ void drawTextStepBack()
 	
 
 	textNowRow++; // 当前行加一
-	int midowDx = centeringText(nowText);
-	outtextxy(startTextX + midowDx, startTextY + textNowRow * textHeight, nowText);
+	int midowDx = centeringLRText(nowText);
+	int midowDy = centeringHWText(nowText); // 居中y偏量返回
+	outtextxy(startTextX + midowDx, startTextY + textNowRow * textHeight + midowDy, nowText);
 }
 
 // 绘制进一步按钮文字
@@ -261,8 +278,9 @@ void drawTextStepFront()
 	nowText = setGameTextType(L"人要往前看", RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_OTHER);
 
 	textNowRow++; // 当前行加一
-	int midowDx = centeringText(nowText);
-	outtextxy(startTextX + midowDx, startTextY + textNowRow * textHeight, nowText);
+	int midowDx = centeringLRText(nowText);
+	int midowDy = centeringHWText(nowText); // 居中y偏量返回
+	outtextxy(startTextX + midowDx, startTextY + textNowRow * textHeight + midowDy, nowText);
 }
 
 // 绘制重新开始按钮文字
@@ -272,8 +290,9 @@ void drawTextRestart()
 
 
 	textNowRow++; // 当前行加一
-	int midowDx = centeringText(nowText);
-	outtextxy(startTextX + midowDx, startTextY + textNowRow * textHeight, nowText);
+	int midowDx = centeringLRText(nowText);
+	int midowDy = centeringHWText(nowText); // 居中y偏量返回
+	outtextxy(startTextX + midowDx, startTextY + textNowRow * textHeight + midowDy, nowText);
 }
 
 // 绘制文本
