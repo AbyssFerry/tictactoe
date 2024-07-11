@@ -12,8 +12,8 @@ using namespace std;
 #define HEIGHT_CHECKERBOARD 840 // 棋盘高 要与行数能整除
 #define START_CHECKERBOARD_X 500 // 棋盘开始绘制x位置
 #define START_CHECKERBOARD_Y 25 // 棋盘开始绘制y位置
-#define ROWS_WINDOW 20 // 行数   标准五子棋是15x15
-#define COLS_WINDOW 20 // 列数  
+#define ROWS_WINDOW 21 // 行数   标准五子棋是15x15
+#define COLS_WINDOW 21 // 列数  
 #define GAME_FRAME 60 // 帧数
 #define WIN_COUNT 5 // 连成多少个就赢
 /*-----------------------------------------------------*/
@@ -71,8 +71,12 @@ void drawText(); // 绘制文本
 TCHAR* setGameTextType(const TCHAR content[100] = _T("默认输出"), COLORREF colorRGB = RGB(0, 0, 0), double height = 10); // 设置文本样式参数
 void drawTextTitie(); // 绘制标题文字
 void drawTextRestart(); // 绘制重新开始按钮文字
-void drawTextStepFront(); // 绘制进一步按钮文字
 void drawTextStepBack(); // 绘制退一步按钮文字
+void drawTextPicture(); // 绘制图片
+void drawTextPicture_doubleManPlayChess(int startX, int startY); // 绘制两个人下棋画面
+void drawTextBlackTime(); // 绘制黑棋剩余时间
+void drawTextWhiteTime(); // 绘制白棋剩余时间
+void drawTextScore(); // 绘制比分
 void drawTextPrompt(); // 绘制提示文字
 void showWinner(); // 绘制输赢画面
 void drawCircle(int x, int y, int r); // 绘制棋子画圆
@@ -223,7 +227,7 @@ TCHAR* setGameTextType(const TCHAR content[100], COLORREF colorRGB, double heigh
 // 绘制标题文字
 void drawTextTitie()
 {
-	nowText = setGameTextType(L"来吧开始博弈！！！", RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_TITLE);
+	nowText = setGameTextType(L"===来吧开始博弈===", RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_TITLE);
 
 	// 通过标题初始化位置以及每行文字高度
 	static int firstFlag = true; // 只初始化一次
@@ -258,12 +262,215 @@ void drawTextPrompt()
 
 }
 
+void drawTextPicture_doubleManPlayChess(int startX, int startY) {
+	// 左边人头
+	int lheadX = 20, lheadY = 20, lheadR = 40;
+	circle(startX + lheadX, startY + lheadY, lheadR);
+	// 左边人身子
+	int lbodyLen = 60;
+	line(startX + lheadX, startY + lheadY + lheadR, startX + lheadX, startY + lheadY + lheadR + lbodyLen);
+	// 左边人手1
+	int lhand1X = 120, lhand1Y = 10, lhandDy = lbodyLen / 2 - 10;
+	line(startX + lheadX, startY + lheadY + lheadR + lhandDy, startX + lheadX + lhand1X, startY + lheadY + lheadR + lhandDy + lhand1Y); 
+	// 左边人手2
+	int lhand21X = 50, lhand21Y = 30;
+	int lhand22X = 41, lhand22Y = 55;
+	line(startX + lheadX, startY + lheadY + lheadR + lhandDy, startX + lheadX + lhand21X, startY + lheadY + lheadR + lhandDy + lhand21Y);
+	line(startX + lheadX + lhand21X, startY + lheadY + lheadR + lhandDy + lhand21Y, startX + lhand22X, startY + lhand22Y);
+	// 左边腿11
+	int lleg11X = 60, lleg11Y = 5;
+	line(startX + lheadX, startY + lheadY + lheadR + lbodyLen, startX + lheadX + lleg11X, startY + lheadY + lheadR + lbodyLen + lleg11Y); 
+	// 左边腿12
+	int lleg12X = -5, lleg12Y = 70;
+	line(startX + lheadX + lleg11X, startY + lheadY + lheadR + lbodyLen + lleg11Y, startX + lheadX + lleg11X + lleg12X, startY + lheadY + lheadR + lbodyLen + lleg11Y + lleg12Y);
+	// 左边腿21
+	int lleg21X = 40, lleg21Y = 15;
+	line(startX + lheadX, startY + lheadY + lheadR + lbodyLen, startX + lheadX + lleg21X, startY + lheadY + lheadR + lbodyLen + lleg21Y); 
+	// 左边腿22
+	int lleg22X = -5, lleg22Y = 60;
+	line(startX + lheadX + lleg21X, startY + lheadY + lheadR + lbodyLen + lleg21Y, startX + lheadX + lleg21X + lleg22X, startY + lheadY + lheadR + lbodyLen + lleg21Y + lleg22Y);
+	
+	// 左边人拿着的黑棋
+	int lTakeChessX = startX + lheadX + lhand1X, lTakeChessY = startY + lheadY + lheadR + lhandDy + lhand1Y;
+	int lTakeChessR = 5;
+	setfillcolor(COLORREF(RGB(0, 0, 0)));
+	fillcircle(lTakeChessX, lTakeChessY, lTakeChessR);
+
+	// 左边椅子
+	int lseatAx = startX + lheadX - 20, lseatAy = startY + lheadY + lheadR + lbodyLen + 5;
+	int lseatWide = 40, lseatHigh = 75, lseatDy = 10, lseatDx = lseatDy / 2 * 5;
+	/*  图像点如图
+	      e ------ f
+		-		  -|
+	   a ------ d  |
+	   |		|  |
+	   |		|  | 
+	   |		|  |
+	   |		|  g
+	   |		| - 
+	   b ------ c
+	*/
+	POINT pts[] = { 
+		{lseatAx, lseatAy},  // a
+		{lseatAx, lseatAy + lseatHigh},  // b
+		{lseatAx + lseatWide, lseatAy + lseatHigh}, // c
+		{lseatAx + lseatWide, lseatAy}, // d
+		{lseatAx, lseatAy},  // a
+		{lseatAx + lseatDx, lseatAy - lseatDy},  // e
+		{lseatAx + lseatDx + lseatWide, lseatAy - lseatDy},  // f
+		{lseatAx + lseatWide, lseatAy}, // d
+		{lseatAx + lseatDx + lseatWide, lseatAy - lseatDy},  // f
+		{lseatAx + lseatDx + lseatWide, lseatAy - lseatDy + lseatHigh},  // g
+		{lseatAx + lseatWide, lseatAy + lseatHigh}, // c
+		{lseatAx, lseatAy + lseatHigh},  // b
+		{lseatAx, lseatAy},  // a
+
+	};
+	polygon(pts, 13); 
 
 
-// 绘制退一步按钮文字
-void drawTextStepBack()
+	// 桌子
+	int tableAX = startX + lheadX + 63, tableAY = startY + lheadY + lheadR + lbodyLen + lseatDy / 2;
+	int tableHiht = 80, tableWide = 140, tableDy = 40, tableDx = tableDy / 2 * 5;
+	/*  图像点如图
+		  e -------------- f
+		-	        	 - |
+	   a ------------- d   |
+	   |	       	   |   |
+	   |	           |   |
+	   |	           |   |
+	   |	           |   g
+	   |	           | -
+	   b ------------- c
+	*/
+	POINT pts2[] = {
+		{tableAX, tableAY},  // a
+		{tableAX, tableAY + tableHiht}, // b
+		{tableAX + tableWide, tableAY + tableHiht}, // c
+		{tableAX + tableWide, tableAY}, // d
+		{tableAX, tableAY},  // a
+		{tableAX + tableDx, tableAY - tableDy}, // e
+		{tableAX + tableDx + tableWide, tableAY - tableDy}, // f
+		{tableAX + tableWide, tableAY}, // d
+		{tableAX + tableDx + tableWide, tableAY - tableDy}, // f
+		{tableAX + tableDx + tableWide, tableAY - tableDy + tableHiht}, // g
+		{tableAX + tableWide, tableAY + tableHiht}, // c
+		{tableAX, tableAY + tableHiht}, // b
+		{tableAX, tableAY}  // a
+	};
+	polygon(pts2, 13);
+
+	// 画桌子上的线
+	int tableLineDx = tableWide / 10, tableLineDy = tableDy / 10;
+	for (int i = 1; i < 10; i++) {
+		line(tableAX + i * tableLineDx, tableAY, tableAX + tableDx + i * tableLineDx, tableAY - tableDy);
+		line(tableAX + i * tableLineDy / 2 * 5, tableAY - i * tableLineDy, tableAX + i * tableLineDy / 2 * 5 + tableWide, tableAY - i * tableLineDy);
+	}
+
+	// 右边椅子
+	int rseatAX = tableAX + tableWide + 63, rseatAY = tableAY;
+	int rseatHigh = 75, rseatWide = 40, rseatDy = 10, rseatDx = rseatDy / 2 * 5;
+	/*  图像点如图
+		  e ------ f
+		-		  -|
+	   a ------ d  |
+	   |		|  |
+	   |		|  |
+	   |		|  |
+	   |		|  g
+	   |		| -
+	   b ------ c
+	*/
+	setfillcolor(COLORREF (RGB(236, 208, 133)));
+	POINT pts3[] = {
+		{rseatAX + rseatDx + rseatWide, rseatAY - rseatDy + rseatHigh}, // g
+		{rseatAX + rseatDx + rseatWide, rseatAY - rseatDy}, // f
+		{rseatAX + rseatDx, rseatAY - rseatDy}, // e
+		{rseatAX, rseatAY}, // a
+		{rseatAX + rseatWide, rseatAY}, // d
+		{rseatAX + rseatDx + rseatWide, rseatAY - rseatDy}, // f
+		{rseatAX + rseatDx + rseatWide, rseatAY - rseatDy + rseatHigh}, // g
+		{rseatAX + rseatWide, rseatAY + rseatHigh}, // c
+		{rseatAX + rseatWide, rseatAY}, // d
+		{rseatAX, rseatAY}, // a
+		{rseatAX, rseatAY + rseatHigh}, // b
+		{rseatAX + rseatWide, rseatAY + rseatHigh}, // c
+		{rseatAX + rseatDx + rseatWide, rseatAY - rseatDy + rseatHigh}, // g
+
+	};
+	fillpolygon(pts3, 13);
+
+	// 右边身子
+	int rbodyLen = 60;
+	line(rseatAX + rseatWide, rseatAY - rseatDy / 2, rseatAX + rseatWide, rseatAY - rseatDy / 2 - rbodyLen);
+
+	// 右边人头
+	int rheadR = 40, rheadDx = rseatAX + rseatWide, rheadDy = rseatAY - rseatDy / 2 - rbodyLen - rheadR;
+	circle(rheadDx, rheadDy, rheadR);
+
+	// 右边脚11
+	int rleg11X = 20, rleg11Y = 18;
+	line(rseatAX + rseatWide, rseatAY - rseatDy / 2, rseatAX + rseatWide - rleg11X, rseatAY - rseatDy / 2 - rleg11Y);
+
+	// 右边脚12
+	int rleg12X = 30, rleg12Y = 85;
+	line(rseatAX + rseatWide - rleg11X, rseatAY - rseatDy / 2 - rleg11Y, rseatAX + rseatWide - rleg11X - rleg12X, rseatAY - rseatDy / 2 - rleg11Y + rleg12Y);
+
+	// 右边脚21
+	int rleg21X = -15, rleg21Y = 1;
+	line(rseatAX + rseatWide, rseatAY - rseatDy / 2, rseatAX + rseatWide - rleg12X + rleg21X, rseatAY - rseatDy / 2 + rleg21Y);
+
+	// 右边脚22
+	int rleg22X = 5, rleg22Y = 25;
+	line(rseatAX + rseatWide - rleg12X + rleg21X, rseatAY - rseatDy / 2 + rleg21Y, rseatAX + rseatWide - rleg12X + rleg21X + rleg22X, rseatAY - rseatDy / 2 + rleg21Y + rleg22Y);
+
+	// 右边手
+	int rhandStartX = rseatAX + rseatWide, rhandStartY = rseatAY - rseatDy / 2 - rbodyLen / 2 - 10;
+	// 右边手1
+	int rhand1X = rseatAX + rseatWide - rleg11X - rleg12X, rhand1Y = rseatAY - rseatDy / 2 - rleg11Y + rleg12Y;
+	line(rhandStartX, rhandStartY, rhand1X, rhand1Y);
+
+	// 右边手2
+	int rhand2X = rseatAX + rseatDx + rseatWide - 15, rhand2Y = rseatAY - rseatDy + 3;
+	line(rhandStartX, rhandStartY, rhand2X, rhand2Y);
+}
+
+void drawTextPicture() {
+	nowText = setGameTextType(L"", RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_OTHER);
+
+	textNowRow ++; // 当前行加一
+	int midowDx = 0;
+	int midowDy = 0; // 图片不需要xy居中
+
+	outtextxy(startTextX + midowDx, startTextY + textNowRow * textHeight + midowDy, nowText);
+	drawTextPicture_doubleManPlayChess(startTextX + midowDx, startTextY + textNowRow * textHeight + midowDy);
+
+	textNowRow += 2; // 为图片留出充足空间
+}
+
+void drawTextScore() {
+	nowText = setGameTextType(L"绘制比分", RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_OTHER);
+
+
+	textNowRow++; // 当前行加一
+	int midowDx = centeringLRText(nowText);
+	int midowDy = centeringHWText(nowText); // 居中y偏量返回
+	outtextxy(startTextX + midowDx, startTextY + textNowRow * textHeight + midowDy, nowText);
+}
+
+void drawTextWhiteTime() {
+	nowText = setGameTextType(L"白棋剩余时间", RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_OTHER);
+
+
+	textNowRow++; // 当前行加一
+	int midowDx = centeringLRText(nowText);
+	int midowDy = centeringHWText(nowText); // 居中y偏量返回
+	outtextxy(startTextX + midowDx, startTextY + textNowRow * textHeight + midowDy, nowText);
+}
+
+void drawTextBlackTime()
 {
-	nowText = setGameTextType(L"反方向的钟", RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_OTHER);
+	nowText = setGameTextType(L"黑棋剩余时间", RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_OTHER);
 	
 
 	textNowRow++; // 当前行加一
@@ -272,10 +479,10 @@ void drawTextStepBack()
 	outtextxy(startTextX + midowDx, startTextY + textNowRow * textHeight + midowDy, nowText);
 }
 
-// 绘制进一步按钮文字
-void drawTextStepFront()
+// 绘制退一步按钮文字
+void drawTextStepBack()
 {
-	nowText = setGameTextType(L"人要往前看", RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_OTHER);
+	nowText = setGameTextType(L"我错了我让步", RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_OTHER);
 
 	textNowRow++; // 当前行加一
 	int midowDx = centeringLRText(nowText);
@@ -299,10 +506,13 @@ void drawTextRestart()
 void drawText()
 {
 	drawTextTitie(); // 这个必须在第一因为文字起始位置是在这个里面设置的
+	drawTextPicture();
 	drawTextPrompt();
 	drawTextStepBack();
-	drawTextStepFront();
 	drawTextRestart();
+	drawTextWhiteTime();
+	drawTextBlackTime();
+	drawTextScore();
 }
 
 
