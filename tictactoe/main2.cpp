@@ -4,7 +4,8 @@
 #include <tchar.h>
 #include <iostream>
 
-
+// 搞了棋子大小和棋盘黑点
+// 棋子比分，和重开棋盘需要的初始话函数
 
 using namespace std;
 
@@ -83,8 +84,7 @@ void drawGridding(); // 绘制网格
 void drawGriddingPoint(); // 绘制网格上的半点
 TCHAR* setGameTextType(const TCHAR content[100] = _T("默认输出"), COLORREF colorRGB = RGB(0, 0, 0), double height = 10); // 设置文本样式参数
 void drawTextTitie(); // 绘制标题文字
-void drawTextAdmitDefeat(); // 绘制认输按钮文字
-void gameAdmitDefeat(); // 认输
+void drawTextRestart(); // 绘制认输按钮文字
 void drawTextStepBack(); // 绘制退一步按钮文字
 void drawTextPicture(); // 绘制图片
 void drawTextPicture_doubleManPlayChess(int startX, int startY); // 绘制两个人下棋画面
@@ -94,7 +94,7 @@ void drawTextScore(); // 绘制比分
 void drawTextPrompt(); // 绘制提示文字
 void showWinner(); // 绘制输赢画面
 void drawCircle(int x, int y, int r); // 绘制棋子画圆
-bool drawButton(int x, int y, TCHAR* text); // 绘制按钮， 返回按钮是否被触发
+void drawButton(int x,int y, TCHAR* text); // 绘制按钮
 /*-----------------------------------------------------*/
 
 
@@ -202,24 +202,11 @@ void drawCircle(int x, int y, int r)
 	fillcircle(x, y, r);
 }
 
-bool drawButton(int x, int y, TCHAR* text)
+void drawButton(int x, int y, TCHAR* text)
 {
-	int x1 = x - (textWeight / BUTTON_WIDE - textwidth(text)) / 2;
-	int y1 = y - (HEIGHT_WINDOW / BUTTON_HIGH - textheight(text)) / 2;
-	int x2 = x + textwidth(text) + (textWeight / BUTTON_WIDE - textwidth(text)) / 2;
-	int y2 = y + textheight(text) + (HEIGHT_WINDOW / BUTTON_HIGH - textheight(text)) / 2;
-
-	if ((mouseX >= x1 && mouseX <= x2) && (mouseY >= y1 && mouseY <= y2)) {
-		setfillcolor(BUTTON_COLLOR_ACTIVATE); // 鼠标在就绘制激活颜色
-		solidrectangle(x1, y1, x2, y2);
-		if (isClick) return true; // 如果鼠标点击了就代表按钮触发
-	}
-	else {
-		setfillcolor(BUTTON_COLLOR_ORINGE);
-		solidrectangle(x1, y1, x2, y2);
-	}
-
-	return false;
+	setfillcolor(BUTTON_COLLOR_ORINGE);
+	solidrectangle(x - (textWeight / BUTTON_WIDE - textwidth(text)) / 2, y - (HEIGHT_WINDOW / BUTTON_HIGH - textheight(text)) / 2, x + textwidth(text) + (textWeight / BUTTON_WIDE - textwidth(text)) / 2, y + textheight(text) + (HEIGHT_WINDOW / BUTTON_HIGH - textheight(text)) / 2);
+	
 }
 
 
@@ -296,9 +283,6 @@ void outTextMiddow(int textNowRow)
 TCHAR* setGameTextType(const TCHAR content[100], COLORREF colorRGB, double height)
 {
 	settextcolor(colorRGB);  // 黑色
-
-	setbkmode(TRANSPARENT); // 设置文字背景模式为透明
-
 	gettextstyle(&gameTextType);  // 获取当前文字样式
 
 	gameTextType.lfHeight = height;  // 根据比例绘制提示文字的高
@@ -578,8 +562,8 @@ void drawTextStepBack()
 	outtextxy(startTextX + midowDx, startTextY + textNowRow * textHeight + midowDy, nowText);
 }
 
-// 绘制认输按钮文字
-void drawTextAdmitDefeat()
+// 绘制重新开始按钮文字
+void drawTextRestart()
 {
 	nowText = setGameTextType(L"认输", RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_OTHER);
 
@@ -590,25 +574,8 @@ void drawTextAdmitDefeat()
 
 	static int startX = startTextX + midowDx;
 	static int startY = startTextY + textNowRow * textHeight + midowDy;
-	
-	int pressButton = drawButton(startX, startY, nowText);
-	if (pressButton) gameAdmitDefeat();
-	
+	drawButton(startX, startY, nowText);
 	outtextxy(startX, startY, nowText);
-}
-
-void gameAdmitDefeat()
-{
-	if (nowChessType == 'O') // 如果现在是白棋则黑棋赢了
-	{
-		gameResult = 2;
-	}
-	else
-	{
-		gameResult = 1;
-	}
-	running = false;
-
 }
 
 // 绘制文本
@@ -618,7 +585,7 @@ void drawText()
 	drawTextPicture();
 	drawTextPrompt();
 	drawTextStepBack();
-	drawTextAdmitDefeat();
+	drawTextRestart();
 	drawTextWhiteTime();
 	drawTextBlackTime();
 	drawTextScore();
@@ -640,23 +607,18 @@ void gameDraw()
 // 读取数据
 void gameRand()
 {
-	if (!running) return;
-
-	isClick = false;
 	while (peekmessage(&msg))
 	{
-		if (msg.message == WM_MOUSEMOVE) // 鼠标移动信息
+		if (msg.message == WM_LBUTTONDOWN)
 		{
+			// 判断鼠标是否越界
+			if (msg.x < START_CHECKERBOARD_X || msg.x > START_CHECKERBOARD_X + WIDTH_CHECKERBOARD - col_size) return;
+			if (msg.y < START_CHECKERBOARD_Y || msg.y > START_CHECKERBOARD_Y + HEIGHT_CHECKERBOARD - row_size) return;
 			mouseX = msg.x;
 			mouseY = msg.y;
-		}
-		if (msg.message == WM_LBUTTONDOWN) {
-
 			isClick = true;
 		}
-
 	}
-
 }
 
 // 检测棋子是否越界
@@ -720,13 +682,8 @@ bool gameOver(int row, int col)
 // 数据处理
 void gameProcess()
 {
-	if (!running) return;
-
-	// 鼠标是否点击
 	if (!isClick) return;
-	// 判断鼠标是否越界棋盘
-	if (mouseX < START_CHECKERBOARD_X || mouseX > START_CHECKERBOARD_X + WIDTH_CHECKERBOARD - col_size ||
-		mouseY < START_CHECKERBOARD_Y || mouseY > START_CHECKERBOARD_Y + HEIGHT_CHECKERBOARD - row_size) return;
+
 	// 通过向下取整得出，鼠标点击方块左上角点的行数
 	int zeroRow = (mouseY - START_CHECKERBOARD_Y) / row_size;
 	int zeroCol = (mouseX - START_CHECKERBOARD_X) / col_size;
@@ -749,6 +706,8 @@ void gameProcess()
 	running = gameOver(row, col); // 检测是否结束
 	if (nowChessType == 'X') nowChessType = 'O';
 	else nowChessType = 'X';
+	isClick = false;
+
 }
 
 // 控制帧率
