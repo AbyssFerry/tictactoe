@@ -8,8 +8,6 @@
 // 实现了void turnChessType(); // 转换当前棋子类型
 // 构造了结构体chessPosRowAndCol {int row;int col;}
 // 实现了悔棋函数chessUndo() 以及相关依赖
-// 实现了倒计时，以及相关依赖
-// 实现了按esc安全退出
 
 using namespace std;
 
@@ -52,7 +50,7 @@ typedef struct chessPosRowAndCol {
 // 用于倒计时
 class Time {
 public:
-	Time(int h = 0, int m = 0, int s = 0) : h(h), m(m), s(s) {}
+	Time(int h = 0, int m = 0, int s = 0) : h(h), m(m), s(s){}
 	Time& operator--() {
 		if (m == 0 && h != 0) {
 			m += 60;
@@ -164,8 +162,8 @@ void init()
 	whiteScore = 0;
 
 	// 初始化倒计时为5分钟, 并且黑方开始计时
-	blackChessCDTime = Time(0, 5, 0);
-	whiteChessCDTime = Time(0, 5, 0);;
+	blackChessCDTime = Time(0, 0, 10);
+	whiteChessCDTime = Time(0, 0, 10);
 	nowCDTime = &blackChessCDTime;
 
 	// 游戏开始运行
@@ -672,10 +670,10 @@ void drawTextAdmitDefeat()
 
 	static int startX = startTextX + midowDx;
 	static int startY = startTextY + textNowRow * textHeight + midowDy;
-
+	
 	bool pressButton = drawButton(startX, startY, nowText);
 	if (pressButton) gameAdmitDefeat();
-
+	
 	outtextxy(startX, startY, nowText);
 }
 
@@ -723,11 +721,6 @@ void gameDraw()
 void gameRand()
 {
 	if (!running) return;
-	if (GetAsyncKeyState(VK_ESCAPE)) // ESC被按下
-	{
-		exit(0);
-	}
-
 
 	isClick = false;
 	while (peekmessage(&msg))
@@ -823,7 +816,6 @@ void countdownProcess() {
 		--(*nowCDTime);
 	}
 
-	// 检测倒计时有没有结束
 	running = !gameTimeOver();
 }
 
@@ -874,7 +866,7 @@ void gameProcess()
 	// 倒计时处理
 	countdownProcess();
 
-
+	
 
 }
 
