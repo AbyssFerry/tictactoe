@@ -824,7 +824,7 @@ void countdownProcess() {
 	}
 
 	// 检测倒计时有没有结束
-	running = !gameTimeOver();
+	if (running != false)  running = !gameTimeOver();
 }
 
 
@@ -860,7 +860,7 @@ void chessBoardProcess() {
 	lastChessPos.col = col;
 
 	chessCount++; // 棋子个数加一
-	running = !gameChessOver(row, col); // 检测是否结束
+	if(running != false) running = !gameChessOver(row, col); // 检测是否结束
 	turnChessType();
 }
 
