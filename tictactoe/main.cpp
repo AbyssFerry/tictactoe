@@ -5,12 +5,6 @@
 #include <iostream>
 #include <ctime>
 
-// 实现了void turnChessType(); // 转换当前棋子类型
-// 构造了结构体chessPosRowAndCol {int row;int col;}
-// 实现了悔棋函数chessUndo() 以及相关依赖
-// 实现了倒计时，以及相关依赖
-// 实现了按esc安全退出
-
 using namespace std;
 
 #define WIDTH_WINDOW 1400 // 界面宽 1400
@@ -725,6 +719,7 @@ void gameRand()
 	if (!running) return;
 	if (GetAsyncKeyState(VK_ESCAPE)) // ESC被按下
 	{
+		closegraph();
 		exit(0);
 	}
 
@@ -895,12 +890,30 @@ void gamesleep()
 
 
 
-int main()
-{
+//int main()
+//{
+//	init();
+//	while (1)
+//	{
+//
+//		while (running)
+//		{
+//			gamesleep();
+//			gameRand();
+//			gameProcess();
+//			gameDraw();
+//		}
+//
+//		gameRestart();
+//	}
+//	return 0;
+//}
+
+// 作为windowGUI命令程序的入口，还要修改项目属性的子系统，可以实现不输出命令行
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow) {
 	init();
 	while (1)
 	{
-
 		while (running)
 		{
 			gamesleep();
@@ -908,11 +921,8 @@ int main()
 			gameProcess();
 			gameDraw();
 		}
-
 		gameRestart();
 	}
+	closegraph(); 
 	return 0;
 }
-
-
-
