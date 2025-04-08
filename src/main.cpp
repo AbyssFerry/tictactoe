@@ -1,3 +1,4 @@
+
 #include <graphics.h>
 #include <windows.h>
 #include <algorithm>
@@ -372,7 +373,7 @@ TCHAR *setGameTextType(const TCHAR content[100], COLORREF colorRGB, double heigh
 // 绘制标题文字
 void drawTextTitie()
 {
-	nowText = setGameTextType(L"===来吧开始博弈===", RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_TITLE);
+	nowText = setGameTextType(_T("===来吧开始博弈==="), RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_TITLE);
 
 	// 通过标题初始化位置以及每行文字高度
 	static int firstFlag = true; // 只初始化一次
@@ -395,7 +396,7 @@ void drawTextTitie()
 void drawTextPrompt()
 {
 	static TCHAR tempText[100]; // 用于拼接
-	_stprintf_s(tempText, sizeof(tempText) / sizeof(TCHAR), _T("目前的棋子是: %s"), nowChessType == 'O' ? L"白棋" : L"黑棋");
+	_stprintf_s(tempText, sizeof(tempText) / sizeof(TCHAR), _T("目前的棋子是: %s"), nowChessType == 'O' ? _T("白棋") : _T("黑棋"));
 	nowText = setGameTextType(tempText, RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_PROMPT);
 
 	textNowRow++;							// 当前行加一
@@ -580,7 +581,7 @@ void drawTextPicture_doubleManPlayChess(int startX, int startY)
 
 void drawTextPicture()
 {
-	nowText = setGameTextType(L"", RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_OTHER);
+	nowText = setGameTextType(_T(""), RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_OTHER);
 
 	textNowRow++; // 当前行加一
 	int midowDx = 0;
@@ -631,7 +632,7 @@ void drawTextBlackTime()
 // 绘制悔棋按钮文字
 void drawTextStepBack()
 {
-	nowText = setGameTextType(L"悔棋", RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_OTHER);
+	nowText = setGameTextType(_T("悔棋"), RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_OTHER);
 
 	textNowRow++; // 当前行加一
 	int midowDx = centeringLRText(nowText);
@@ -660,7 +661,7 @@ void chessUndo()
 // 绘制认输按钮文字
 void drawTextAdmitDefeat()
 {
-	nowText = setGameTextType(L"认输", RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_OTHER);
+	nowText = setGameTextType(_T("认输"), RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_OTHER);
 
 	textNowRow++; // 当前行加一
 	int midowDx = centeringLRText(nowText);
