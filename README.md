@@ -26,9 +26,9 @@
 ### 从源代码构建
 
 **系统要求**：
-• Windows 10/11
-• MinGW-w64 (g++ 8.1+)
-• [EasyX 2022](https://easyx.cn)
+• Windows 10/11  
+• MinGW-w64 (g++ 8.1+)  
+• [EasyX 2022](https://easyx.cn)  
 
 **构建步骤**：
 ```bash
