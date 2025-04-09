@@ -1,4 +1,3 @@
-
 #include <graphics.h>
 #include <windows.h>
 #include <algorithm>
@@ -43,7 +42,7 @@ typedef struct chessPosRowAndCol
 {
 	int row;
 	int col;
-};
+} chessPosRowAndCol;
 
 // 用于倒计时
 class Time
@@ -918,7 +917,7 @@ void gamesleep()
 // }
 
 // 作为windowGUI命令程序的入口，还要修改项目属性的子系统，可以实现不输出命令行
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int)
 {
 	init();
 	while (1)
