@@ -1,0 +1,30 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "Build TicTacToe (GBK)",
+            "command": "g++",
+            "args": [
+                "-finput-charset=GBK",    // 输入字符集
+                "-fexec-charset=GBK",     // 执行字符集
+                "-std=c++11",
+                "-I", "${workspaceFolder}/include",
+                "-L", "${workspaceFolder}/lib",
+                "-o", "${workspaceFolder}/build/tictactoe.exe",
+                "${workspaceFolder}/src/main.cpp",
+                "-leasyx",
+                "-lgdi32",
+                "-lole32",
+                "-loleaut32",
+                "-lwinmm"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": ["$gcc"],
+            "group": "build",
+            "detail": "GBK编码专用编译配置"
+        }
+    ]
+}

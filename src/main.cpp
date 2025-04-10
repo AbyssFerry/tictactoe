@@ -7,44 +7,44 @@
 
 using namespace std;
 
-#define WIDTH_WINDOW 1400		 // ç•Œé¢å®½ 1400
-#define HEIGHT_WINDOW 900		 // ç•Œé¢é«˜ 900
-#define WIDTH_CHECKERBOARD 840	 // æ£‹ç›˜å®½  è¦ä¸åˆ—æ•°èƒ½æ•´é™¤
-#define HEIGHT_CHECKERBOARD 840	 // æ£‹ç›˜é«˜ è¦ä¸è¡Œæ•°èƒ½æ•´é™¤
-#define START_CHECKERBOARD_X 500 // æ£‹ç›˜å¼€å§‹ç»˜åˆ¶xä½ç½®
-#define START_CHECKERBOARD_Y 25	 // æ£‹ç›˜å¼€å§‹ç»˜åˆ¶yä½ç½®
-#define ROWS_WINDOW 21			 // è¡Œæ•°   æ ‡å‡†äº”å­æ£‹æ˜¯15x15
-#define COLS_WINDOW 21			 // åˆ—æ•°
-#define GAME_FRAME 60			 // å¸§æ•°
-#define WIN_COUNT 5				 // è¿æˆå¤šå°‘ä¸ªå°±èµ¢
+#define WIDTH_WINDOW 1400		 // ½çÃæ¿í 1400
+#define HEIGHT_WINDOW 900		 // ½çÃæ¸ß 900
+#define WIDTH_CHECKERBOARD 840	 // ÆåÅÌ¿í  ÒªÓëÁĞÊıÄÜÕû³ı
+#define HEIGHT_CHECKERBOARD 840	 // ÆåÅÌ¸ß ÒªÓëĞĞÊıÄÜÕû³ı
+#define START_CHECKERBOARD_X 500 // ÆåÅÌ¿ªÊ¼»æÖÆxÎ»ÖÃ
+#define START_CHECKERBOARD_Y 25	 // ÆåÅÌ¿ªÊ¼»æÖÆyÎ»ÖÃ
+#define ROWS_WINDOW 21			 // ĞĞÊı   ±ê×¼Îå×ÓÆåÊÇ15x15
+#define COLS_WINDOW 21			 // ÁĞÊı
+#define GAME_FRAME 60			 // Ö¡Êı
+#define WIN_COUNT 5				 // Á¬³É¶àÉÙ¸ö¾ÍÓ®
 /*-----------------------------------------------------*/
 
-#define TEXT_TITLE 22  // æ ‡é¢˜æ–‡å­—å ç”»é¢é«˜çš„å¤šå°‘åˆ†ä¹‹ä¸€
-#define TEXT_PROMPT 30 // æç¤ºæ–‡å­—å ç”»é¢é«˜çš„å¤šå°‘åˆ†ä¹‹ä¸€
-#define TEXT_OTHER 35  // å…¶ä»–æ–‡å­—å ç”»é¢é«˜çš„å¤šå°‘åˆ†ä¹‹ä¸€
-#define TEXT_ROW 10	   // æ–‡æœ¬åŒºåŸŸè¡Œæ•°
-#define BUTTON_HIGH 30 // æŒ‰é’®é«˜å ç”»é¢é«˜å¤šå°‘
-#define BUTTON_WIDE 3  // æŒ‰é’®å®½å æ ‡é¢˜å®½å¤šå°‘
+#define TEXT_TITLE 22  // ±êÌâÎÄ×ÖÕ¼»­Ãæ¸ßµÄ¶àÉÙ·ÖÖ®Ò»
+#define TEXT_PROMPT 30 // ÌáÊ¾ÎÄ×ÖÕ¼»­Ãæ¸ßµÄ¶àÉÙ·ÖÖ®Ò»
+#define TEXT_OTHER 35  // ÆäËûÎÄ×ÖÕ¼»­Ãæ¸ßµÄ¶àÉÙ·ÖÖ®Ò»
+#define TEXT_ROW 10	   // ÎÄ±¾ÇøÓòĞĞÊı
+#define BUTTON_HIGH 30 // °´Å¥¸ßÕ¼»­Ãæ¸ß¶àÉÙ
+#define BUTTON_WIDE 3  // °´Å¥¿íÕ¼±êÌâ¿í¶àÉÙ
 /*-----------------------------------------------------*/
 #define BACKGROUND_COLLOR RGB(236, 208, 133)
 #define BUTTON_COLLOR_ORINGE RGB(128, 128, 128)
 #define BUTTON_COLLOR_ACTIVATE RGB(160, 160, 160)
 
 /*-----------------------------------------------------*/
-int startTextX; // æ–‡å­—å¼€å§‹ç»˜åˆ¶xä½ç½®ï¼ˆåœ¨æ ‡é¢˜è¾“å‡ºå‡½æ•°ä¸­åˆå§‹åŒ–ï¼‰
-int startTextY; // æ–‡å­—å¼€å§‹ç»˜åˆ¶yä½ç½® ï¼ˆåœ¨æ ‡é¢˜è¾“å‡ºå‡½æ•°ä¸­åˆå§‹åŒ–ï¼‰
-int textHeight; // æ¯è¡Œæ–‡å­—åŒºåŸŸé«˜åº¦ ï¼ˆåœ¨æ ‡é¢˜è¾“å‡ºå‡½æ•°ä¸­åˆå§‹åŒ–ï¼‰
-int textWeight; // æ¯è¡Œæ–‡å­—åŒºåŸŸå®½åº¦ ï¼ˆä¹Ÿå°±æ˜¯æ ‡é¢˜çš„å®½åº¦ï¼‰
-int textNowRow; // ä»£è¡¨ç°åœ¨æ–‡å­—è¾“å‡ºåˆ°ç¬¬å‡ è¡Œ ï¼ˆåœ¨æ ‡é¢˜è¾“å‡ºå‡½æ•°ä¸­åˆå§‹åŒ–ï¼‰
+int startTextX; // ÎÄ×Ö¿ªÊ¼»æÖÆxÎ»ÖÃ£¨ÔÚ±êÌâÊä³öº¯ÊıÖĞ³õÊ¼»¯£©
+int startTextY; // ÎÄ×Ö¿ªÊ¼»æÖÆyÎ»ÖÃ £¨ÔÚ±êÌâÊä³öº¯ÊıÖĞ³õÊ¼»¯£©
+int textHeight; // Ã¿ĞĞÎÄ×ÖÇøÓò¸ß¶È £¨ÔÚ±êÌâÊä³öº¯ÊıÖĞ³õÊ¼»¯£©
+int textWeight; // Ã¿ĞĞÎÄ×ÖÇøÓò¿í¶È £¨Ò²¾ÍÊÇ±êÌâµÄ¿í¶È£©
+int textNowRow; // ´ú±íÏÖÔÚÎÄ×ÖÊä³öµ½µÚ¼¸ĞĞ £¨ÔÚ±êÌâÊä³öº¯ÊıÖĞ³õÊ¼»¯£©
 
-// ç”¨äºå‚¨å­˜æ£‹å­è¡Œåˆ—
+// ÓÃÓÚ´¢´æÆå×ÓĞĞÁĞ
 typedef struct chessPosRowAndCol
 {
 	int row;
 	int col;
 } chessPosRowAndCol;
 
-// ç”¨äºå€’è®¡æ—¶
+// ÓÃÓÚµ¹¼ÆÊ±
 class Time
 {
 public:
@@ -67,77 +67,77 @@ public:
 	int h, m, s;
 };
 
-int chessCount;					// æ£‹å­æ•°é‡ç”¨äºå¹³å±€åˆ¤å®š
-double row_size;				// è¡Œå¤§å°
-double col_size;				// åˆ—å¤§å°
-int mouseX, mouseY;				// é¼ æ ‡ä½ç½®
-ExMessage msg;					// è®°å½•é”®ç›˜æ¶ˆæ¯
-char nowChessType;				// å½“å‰æ£‹çš„ç±»å‹ Xé»‘ Oç™½
-chessPosRowAndCol lastChessPos; // è®°å½•ä¸Šä¸€ä¸ªæ£‹å­çš„ä½ç½®ï¼Œç”¨äºå®ç°æ‚”æ£‹
-bool isClick;					// æ˜¯å¦æœ‰é¼ æ ‡ç‚¹å‡»
-bool running;					// æ¸¸æˆæ˜¯å¦ç»“æŸ
-int gameResult;					// 0 å¹³å±€ï¼Œ 1 Oèµ¢ï¼Œ 2 Xèµ¢
-int blackScore, whiteScore;		// é»‘æ£‹å’Œç™½æ£‹å¾—åˆ†
-Time blackChessCDTime;			// é»‘æ£‹å€’è®¡æ—¶
-Time whiteChessCDTime;			// ç™½æ£‹å€’è®¡æ—¶
-Time *nowCDTime;				// ç°åœ¨çš„å€’è®¡æ—¶
-time_t nowTimeSecondCD;			// ç”¨äºå€’è®¡æ—¶çš„æ—¶é—´
-LOGFONT gameTextType;			// æ¸¸æˆæ–‡æœ¬è¾“å‡ºæ ·å¼ç±»å‹
-TCHAR *nowText;					// æ¥å—æ–‡æœ¬æ ·å¼å‚æ•°è¿”å›å†…å®¹
+int chessCount;					// Æå×ÓÊıÁ¿ÓÃÓÚÆ½¾ÖÅĞ¶¨
+double row_size;				// ĞĞ´óĞ¡
+double col_size;				// ÁĞ´óĞ¡
+int mouseX, mouseY;				// Êó±êÎ»ÖÃ
+ExMessage msg;					// ¼ÇÂ¼¼üÅÌÏûÏ¢
+char nowChessType;				// µ±Ç°ÆåµÄÀàĞÍ XºÚ O°×
+chessPosRowAndCol lastChessPos; // ¼ÇÂ¼ÉÏÒ»¸öÆå×ÓµÄÎ»ÖÃ£¬ÓÃÓÚÊµÏÖ»ÚÆå
+bool isClick;					// ÊÇ·ñÓĞÊó±êµã»÷
+bool running;					// ÓÎÏ·ÊÇ·ñ½áÊø
+int gameResult;					// 0 Æ½¾Ö£¬ 1 OÓ®£¬ 2 XÓ®
+int blackScore, whiteScore;		// ºÚÆåºÍ°×ÆåµÃ·Ö
+Time blackChessCDTime;			// ºÚÆåµ¹¼ÆÊ±
+Time whiteChessCDTime;			// °×Æåµ¹¼ÆÊ±
+Time *nowCDTime;				// ÏÖÔÚµÄµ¹¼ÆÊ±
+time_t nowTimeSecondCD;			// ÓÃÓÚµ¹¼ÆÊ±µÄÊ±¼ä
+LOGFONT gameTextType;			// ÓÎÏ·ÎÄ±¾Êä³öÑùÊ½ÀàĞÍ
+TCHAR *nowText;					// ½ÓÊÜÎÄ±¾ÑùÊ½²ÎÊı·µ»ØÄÚÈİ
 DWORD start_time;
-DWORD now_time; // å’Œstart_time å®ç°å¸§ç‡æ§åˆ¶
+DWORD now_time; // ºÍstart_time ÊµÏÖÖ¡ÂÊ¿ØÖÆ
 /*-----------------------------------------------------*/
 
-// å‚¨å­˜æ£‹å­ä½ç½®çš„æ•°ç»„
+// ´¢´æÆå×ÓÎ»ÖÃµÄÊı×é
 char gameBoard[ROWS_WINDOW][COLS_WINDOW];
 
-int main();			  // ä¸»å‡½æ•°
-void init();		  // åˆå§‹åŒ–
-void gamesleep();	  // æ§åˆ¶å¸§ç‡
-void gameRand();	  // è¯»å–æ•°æ®
-void gameProcess();	  // æ•°æ®å¤„ç†
-void gameDraw();	  // æ¸²æŸ“
-void gameRestart();	  // é‡æ–°å¼€å§‹æ–°çš„ä¸€å±€
-void turnChessType(); // è½¬æ¢å½“å‰æ£‹å­ç±»å‹
+int main();			  // Ö÷º¯Êı
+void init();		  // ³õÊ¼»¯
+void gamesleep();	  // ¿ØÖÆÖ¡ÂÊ
+void gameRand();	  // ¶ÁÈ¡Êı¾İ
+void gameProcess();	  // Êı¾İ´¦Àí
+void gameDraw();	  // äÖÈ¾
+void gameRestart();	  // ÖØĞÂ¿ªÊ¼ĞÂµÄÒ»¾Ö
+void turnChessType(); // ×ª»»µ±Ç°Æå×ÓÀàĞÍ
 /*-----------------------------------------------------*/
 
-bool gameChessOver(int row, int col);			// æ£€æµ‹æ˜¯å¦æ£‹å­è¿æˆè·èƒœä¸ªæ•°æˆ–æ˜¯æ£‹ç›˜æ»¡äº†å¹³å±€
-bool gameTimeOver();							// æ£€æµ‹å€’è®¡æ—¶æ˜¯å¦ç»“æŸ
-int chessSum(int row, int col, int dx, int dy); // æ£€æµ‹æ˜¯å¦èƒœåˆ©
-bool isOverBorder(int &row, int &y);			// æ£€æµ‹æ£‹å­æ˜¯å¦è¶Šç•Œ
+bool gameChessOver(int row, int col);			// ¼ì²âÊÇ·ñÆå×ÓÁ¬³É»ñÊ¤¸öÊı»òÊÇÆåÅÌÂúÁËÆ½¾Ö
+bool gameTimeOver();							// ¼ì²âµ¹¼ÆÊ±ÊÇ·ñ½áÊø
+int chessSum(int row, int col, int dx, int dy); // ¼ì²âÊÇ·ñÊ¤Àû
+bool isOverBorder(int &row, int &y);			// ¼ì²âÆå×ÓÊÇ·ñÔ½½ç
 /*-----------------------------------------------------*/
-void chessBoardProcess(); // æ£‹ç›˜æ•°æ®å¤„ç†
-void countdownProcess();  // å€’è®¡æ—¶å¤„ç†
+void chessBoardProcess(); // ÆåÅÌÊı¾İ´¦Àí
+void countdownProcess();  // µ¹¼ÆÊ±´¦Àí
 
 /*-----------------------------------------------------*/
-int centeringLRText(TCHAR *s); // è¿”å›æ–‡å­—å±…ä¸­æ‰€éœ€çš„xåç§»é‡
-int centeringHWText(TCHAR *s); // è¿”å›æ–‡å­—å±…ä¸­æ‰€éœ€çš„yåç§»é‡
+int centeringLRText(TCHAR *s); // ·µ»ØÎÄ×Ö¾ÓÖĞËùĞèµÄxÆ«ÒÆÁ¿
+int centeringHWText(TCHAR *s); // ·µ»ØÎÄ×Ö¾ÓÖĞËùĞèµÄyÆ«ÒÆÁ¿
 
-void drawData();																										 // ç»˜åˆ¶æ•°æ®
-void drawText();																										 // ç»˜åˆ¶æ–‡æœ¬
-void drawGridding();																									 // ç»˜åˆ¶ç½‘æ ¼
-void drawGriddingPoint();																								 // ç»˜åˆ¶ç½‘æ ¼ä¸Šçš„åŠç‚¹
-TCHAR *setGameTextType(const TCHAR content[100] = _T("é»˜è®¤è¾“å‡º"), COLORREF colorRGB = RGB(0, 0, 0), double height = 10); // è®¾ç½®æ–‡æœ¬æ ·å¼å‚æ•°
-void drawTextTitie();																									 // ç»˜åˆ¶æ ‡é¢˜æ–‡å­—
-void drawTextAdmitDefeat();																								 // ç»˜åˆ¶è®¤è¾“æŒ‰é’®æ–‡å­—
-void gameAdmitDefeat();																									 // è®¤è¾“
-void drawTextStepBack();																								 // ç»˜åˆ¶æ‚”æ£‹æŒ‰é’®æ–‡å­—
-void chessUndo();																										 // æ‚”æ£‹
-void drawTextPicture();																									 // ç»˜åˆ¶å›¾ç‰‡
-void drawTextPicture_doubleManPlayChess(int startX, int startY);														 // ç»˜åˆ¶ä¸¤ä¸ªäººä¸‹æ£‹ç”»é¢
-void drawTextBlackTime();																								 // ç»˜åˆ¶é»‘æ£‹å‰©ä½™æ—¶é—´
-void drawTextWhiteTime();																								 // ç»˜åˆ¶ç™½æ£‹å‰©ä½™æ—¶é—´
-void drawTextScore();																									 // ç»˜åˆ¶æ¯”åˆ†
-void drawTextPrompt();																									 // ç»˜åˆ¶æç¤ºæ–‡å­—
-void showWinner();																										 // ç»˜åˆ¶è¾“èµ¢ç”»é¢
-void drawCircle(int x, int y, int r);																					 // ç»˜åˆ¶æ£‹å­ç”»åœ†
-bool drawButton(int x, int y, TCHAR *text);																				 // ç»˜åˆ¶æŒ‰é’®ï¼Œ è¿”å›æŒ‰é’®æ˜¯å¦è¢«è§¦å‘
+void drawData();																										 // »æÖÆÊı¾İ
+void drawText();																										 // »æÖÆÎÄ±¾
+void drawGridding();																									 // »æÖÆÍø¸ñ
+void drawGriddingPoint();																								 // »æÖÆÍø¸ñÉÏµÄ°ëµã
+TCHAR *setGameTextType(const TCHAR content[100] = _T("Ä¬ÈÏÊä³ö"), COLORREF colorRGB = RGB(0, 0, 0), double height = 10); // ÉèÖÃÎÄ±¾ÑùÊ½²ÎÊı
+void drawTextTitie();																									 // »æÖÆ±êÌâÎÄ×Ö
+void drawTextAdmitDefeat();																								 // »æÖÆÈÏÊä°´Å¥ÎÄ×Ö
+void gameAdmitDefeat();																									 // ÈÏÊä
+void drawTextStepBack();																								 // »æÖÆ»ÚÆå°´Å¥ÎÄ×Ö
+void chessUndo();																										 // »ÚÆå
+void drawTextPicture();																									 // »æÖÆÍ¼Æ¬
+void drawTextPicture_doubleManPlayChess(int startX, int startY);														 // »æÖÆÁ½¸öÈËÏÂÆå»­Ãæ
+void drawTextBlackTime();																								 // »æÖÆºÚÆåÊ£ÓàÊ±¼ä
+void drawTextWhiteTime();																								 // »æÖÆ°×ÆåÊ£ÓàÊ±¼ä
+void drawTextScore();																									 // »æÖÆ±È·Ö
+void drawTextPrompt();																									 // »æÖÆÌáÊ¾ÎÄ×Ö
+void showWinner();																										 // »æÖÆÊäÓ®»­Ãæ
+void drawCircle(int x, int y, int r);																					 // »æÖÆÆå×Ó»­Ô²
+bool drawButton(int x, int y, TCHAR *text);																				 // »æÖÆ°´Å¥£¬ ·µ»Ø°´Å¥ÊÇ·ñ±»´¥·¢
 /*-----------------------------------------------------*/
 
 void init()
 {
 	initgraph(WIDTH_WINDOW, HEIGHT_WINDOW);
-	// è®¡ç®—è¡Œåˆ—çš„å®½
+	// ¼ÆËãĞĞÁĞµÄ¿í
 	row_size = HEIGHT_CHECKERBOARD / ROWS_WINDOW;
 	col_size = WIDTH_CHECKERBOARD / COLS_WINDOW;
 
@@ -149,38 +149,38 @@ void init()
 		}
 	}
 
-	// è®¾ç½®èƒŒæ™¯å¡«å……è‰²
+	// ÉèÖÃ±³¾°Ìî³äÉ«
 	setbkcolor(COLORREF(BACKGROUND_COLLOR));
 
-	// åˆšå¼€æ˜¯å¾—åˆ†éƒ½ä¸º0
+	// ¸Õ¿ªÊÇµÃ·Ö¶¼Îª0
 	blackScore = 0;
 	whiteScore = 0;
 
-	// åˆå§‹åŒ–å€’è®¡æ—¶ä¸º5åˆ†é’Ÿ, å¹¶ä¸”é»‘æ–¹å¼€å§‹è®¡æ—¶
+	// ³õÊ¼»¯µ¹¼ÆÊ±Îª5·ÖÖÓ, ²¢ÇÒºÚ·½¿ªÊ¼¼ÆÊ±
 	blackChessCDTime = Time(0, 5, 0);
 	whiteChessCDTime = Time(0, 5, 0);
 	;
 	nowCDTime = &blackChessCDTime;
 
-	// æ¸¸æˆå¼€å§‹è¿è¡Œ
+	// ÓÎÏ·¿ªÊ¼ÔËĞĞ
 	running = true;
 
-	// ä¸€äº›åˆå§‹åŒ–
+	// Ò»Ğ©³õÊ¼»¯
 	mouseX = -1;
 	mouseY = -1;
 	nowChessType = 'X';
 	isClick = false;
-	start_time = GetTickCount(); // è·å–å¼€æœºåˆ°ç°åœ¨çš„æ—¶é—´
-	nowTimeSecondCD = time(0);	 // è¿”å›1970å¹´1æœˆ1æ—¥åˆå¤œä»¥æ¥ç»è¿‡çš„æ—¶é—´ï¼Œä»¥ç§’ä¸ºå•ä½ã€‚
+	start_time = GetTickCount(); // »ñÈ¡¿ª»úµ½ÏÖÔÚµÄÊ±¼ä
+	nowTimeSecondCD = time(0);	 // ·µ»Ø1970Äê1ÔÂ1ÈÕÎçÒ¹ÒÔÀ´¾­¹ıµÄÊ±¼ä£¬ÒÔÃëÎªµ¥Î»¡£
 	chessCount = 0;
 	gameResult = -1;
 }
 
 void gameRestart()
 {
-	running = true; // æ¸¸æˆè¿›è¡Œè®¾ä¸ºtrue
+	running = true; // ÓÎÏ·½øĞĞÉèÎªtrue
 
-	// æ¸…é™¤æ£‹ç›˜
+	// Çå³ıÆåÅÌ
 	for (int i = 0; i < ROWS_WINDOW; i++)
 	{
 		for (int j = 0; j < COLS_WINDOW; j++)
@@ -189,10 +189,10 @@ void gameRestart()
 		}
 	}
 
-	// å¼€å§‹æ£‹ä¸ºé»‘
+	// ¿ªÊ¼ÆåÎªºÚ
 	nowChessType = 'X';
 
-	// å€’è®¡æ—¶é‡æ–°
+	// µ¹¼ÆÊ±ÖØĞÂ
 	blackChessCDTime = Time(0, 5, 0);
 	whiteChessCDTime = Time(0, 5, 0);
 	nowCDTime = &blackChessCDTime;
@@ -211,13 +211,13 @@ void turnChessType()
 		nowCDTime = &blackChessCDTime;
 }
 
-// ç»˜åˆ¶ç½‘æ ¼
+// »æÖÆÍø¸ñ
 void drawGridding()
 {
-	COLORREF lineColor = RGB(0, 0, 0); // é»‘è‰²
+	COLORREF lineColor = RGB(0, 0, 0); // ºÚÉ«
 	setlinecolor(lineColor);
 
-	// è®¾ç½®ç”»çº¿çš„åç§»é‡
+	// ÉèÖÃ»­ÏßµÄÆ«ÒÆÁ¿
 	int dirx = START_CHECKERBOARD_X;
 	int diry = START_CHECKERBOARD_Y;
 	for (int i = 0; i < HEIGHT_CHECKERBOARD; i += row_size)
@@ -230,20 +230,20 @@ void drawGridding()
 		line(i + dirx, diry, i + dirx, HEIGHT_CHECKERBOARD + diry - row_size);
 	}
 
-	drawGriddingPoint(); // ç»˜åˆ¶ç½‘æ ¼ä¸Šçš„æ–‘ç‚¹
+	drawGriddingPoint(); // »æÖÆÍø¸ñÉÏµÄ°ßµã
 }
 
 void drawGriddingPoint()
 {
-	setfillcolor(COLORREF(RGB(0, 0, 0))); // è®¾ç½®ä¸ºé»‘è‰²
+	setfillcolor(COLORREF(RGB(0, 0, 0))); // ÉèÖÃÎªºÚÉ«
 	int R = min(col_size, row_size) / 9;
-	int Dxy = 5; // æ—è¾¹4ä¸ªç‚¹è·ç¦»ä¸­å¿ƒå¤šå°‘è¡Œåˆ—
+	int Dxy = 5; // ÅÔ±ß4¸öµã¾àÀëÖĞĞÄ¶àÉÙĞĞÁĞ
 
 	int middleRow = ROWS_WINDOW / 2;
 	int middleCol = COLS_WINDOW / 2;
 	int middleX = START_CHECKERBOARD_X + col_size * middleCol;
 	int middleY = START_CHECKERBOARD_Y + row_size * middleRow;
-	fillcircle(middleX, middleY, R); // ç»˜åˆ¶ä¸­å¿ƒç‚¹
+	fillcircle(middleX, middleY, R); // »æÖÆÖĞĞÄµã
 
 	int left_x = START_CHECKERBOARD_X + (middleCol - Dxy) * col_size;
 	int right_x = START_CHECKERBOARD_X + (middleCol + Dxy) * col_size;
@@ -255,7 +255,7 @@ void drawGriddingPoint()
 	fillcircle(right_x, down_y, R);
 }
 
-// ç”»åœ†
+// »­Ô²
 void drawCircle(int x, int y, int r)
 {
 	fillcircle(x, y, r);
@@ -270,10 +270,10 @@ bool drawButton(int x, int y, TCHAR *text)
 
 	if ((mouseX >= x1 && mouseX <= x2) && (mouseY >= y1 && mouseY <= y2))
 	{
-		setfillcolor(BUTTON_COLLOR_ACTIVATE); // é¼ æ ‡åœ¨å°±ç»˜åˆ¶æ¿€æ´»é¢œè‰²
+		setfillcolor(BUTTON_COLLOR_ACTIVATE); // Êó±êÔÚ¾Í»æÖÆ¼¤»îÑÕÉ«
 		solidrectangle(x1, y1, x2, y2);
 		if (isClick)
-			return true; // å¦‚æœé¼ æ ‡ç‚¹å‡»äº†å°±ä»£è¡¨æŒ‰é’®è§¦å‘
+			return true; // Èç¹ûÊó±êµã»÷ÁË¾Í´ú±í°´Å¥´¥·¢
 	}
 	else
 	{
@@ -284,7 +284,7 @@ bool drawButton(int x, int y, TCHAR *text)
 	return false;
 }
 
-// ç»˜åˆ¶æ•°æ®
+// »æÖÆÊı¾İ
 void drawData()
 {
 
@@ -298,41 +298,41 @@ void drawData()
 
 			if (gameBoard[i][j] == 'O')
 			{
-				setfillcolor(COLORREF(RGB(255, 255, 255))); // è®¾ä¸ºç™½è‰²
+				setfillcolor(COLORREF(RGB(255, 255, 255))); // ÉèÎª°×É«
 				setlinecolor(COLORREF(RGB(0, 0, 0)));
 				drawCircle(colSit, rowSit, r);
 			}
 			else if (gameBoard[i][j] == 'X')
 			{
-				setfillcolor(COLORREF(RGB(0, 0, 0))); // è®¾ä¸ºé»‘è‰²
+				setfillcolor(COLORREF(RGB(0, 0, 0))); // ÉèÎªºÚÉ«
 				setlinecolor(COLORREF(RGB(255, 255, 255)));
 				drawCircle(colSit, rowSit, r);
 			}
 		}
 	}
-	setlinecolor(COLORREF(RGB(0, 0, 0))); // æŠŠç”»çº¿é¢œè‰²æ”¹ä¸ºé»˜è®¤é»‘
+	setlinecolor(COLORREF(RGB(0, 0, 0))); // °Ñ»­ÏßÑÕÉ«¸ÄÎªÄ¬ÈÏºÚ
 }
 
 void showWinner()
 {
-	// èƒœåˆ©æç¤º  GetHWndç”¨äºè°ƒç”¨ç³»ç»Ÿå¼¹çª—
+	// Ê¤ÀûÌáÊ¾  GetHWndÓÃÓÚµ÷ÓÃÏµÍ³µ¯´°
 	if (gameResult == 0)
 	{
-		MessageBox(GetHWnd(), _T("ç©å®¶å¹³å±€"), _T("èƒœè´Ÿæƒ…å†µ"), MB_OK);
+		MessageBox(GetHWnd(), _T("Íæ¼ÒÆ½¾Ö"), _T("Ê¤¸ºÇé¿ö"), MB_OK);
 	}
 	else if (gameResult == 1)
 	{
-		MessageBox(GetHWnd(), _T("ç™½æ£‹ç©å®¶èƒœåˆ©(ï¿£yâ–½ï¿£)â•­ Ohohoho....."), _T("èƒœè´Ÿæƒ…å†µ"), MB_OK);
-		whiteScore++; // ç™½æ£‹å¾—ä¸€åˆ†
+		MessageBox(GetHWnd(), _T("°×ÆåÍæ¼ÒÊ¤Àû(^_^)Ohohoho....."), _T("Ê¤¸ºÇé¿ö"), MB_OK);
+		whiteScore++; // °×ÆåµÃÒ»·Ö
 	}
 	else if (gameResult == 2)
 	{
-		MessageBox(GetHWnd(), _T("é»‘æ£‹ç©å®¶èƒœåˆ©â—‹( ï¼¾çš¿ï¼¾)ã£Hiahiahiaâ€¦"), _T("èƒœè´Ÿæƒ…å†µ"), MB_OK);
-		blackScore++; // é»‘æ£‹å¾—ä¸€åˆ†
+		MessageBox(GetHWnd(), _T("ºÚÆåÍæ¼ÒÊ¤Àû(^_^)Hiahiahia..."), _T("Ê¤¸ºÇé¿ö"), MB_OK);
+		blackScore++; // ºÚÆåµÃÒ»·Ö
 	}
 }
 
-// è¿”å›æ–‡å­—å±…ä¸­æ‰€éœ€çš„xåç§»é‡
+// ·µ»ØÎÄ×Ö¾ÓÖĞËùĞèµÄxÆ«ÒÆÁ¿
 int centeringLRText(TCHAR *s)
 {
 	return (textWeight - textwidth(s)) / 2;
@@ -347,102 +347,102 @@ void outTextMiddow(int textNowRow)
 {
 	static int midowDx;
 	static int midowDy;
-	midowDx = centeringLRText(nowText); // å±…ä¸­xåé‡è¿”å›
-	midowDy = centeringHWText(nowText); // å±…ä¸­yåé‡è¿”å›
+	midowDx = centeringLRText(nowText); // ¾ÓÖĞxÆ«Á¿·µ»Ø
+	midowDy = centeringHWText(nowText); // ¾ÓÖĞyÆ«Á¿·µ»Ø
 	outtextxy(startTextX + midowDx, startTextY + textNowRow * textHeight + midowDy, nowText);
 }
 
 TCHAR *setGameTextType(const TCHAR content[100], COLORREF colorRGB, double height)
 {
-	settextcolor(colorRGB); // é»‘è‰²
+	settextcolor(colorRGB); // ºÚÉ«
 
-	setbkmode(TRANSPARENT); // è®¾ç½®æ–‡å­—èƒŒæ™¯æ¨¡å¼ä¸ºé€æ˜
+	setbkmode(TRANSPARENT); // ÉèÖÃÎÄ×Ö±³¾°Ä£Ê½ÎªÍ¸Ã÷
 
-	gettextstyle(&gameTextType); // è·å–å½“å‰æ–‡å­—æ ·å¼
+	gettextstyle(&gameTextType); // »ñÈ¡µ±Ç°ÎÄ×ÖÑùÊ½
 
-	gameTextType.lfHeight = height; // æ ¹æ®æ¯”ä¾‹ç»˜åˆ¶æç¤ºæ–‡å­—çš„é«˜
+	gameTextType.lfHeight = height; // ¸ù¾İ±ÈÀı»æÖÆÌáÊ¾ÎÄ×ÖµÄ¸ß
 
-	settextstyle(&gameTextType); // å°†æ›´æ”¹åçš„æ ·å¼ç»™æ–‡å­—
+	settextstyle(&gameTextType); // ½«¸ü¸ÄºóµÄÑùÊ½¸øÎÄ×Ö
 
-	static TCHAR s[100]; // å‚¨å­˜å†…å®¹æ•°ç»„ï¼Œåˆå§‹åŒ–ä¸€æ¬¡å°±è¡Œï¼Œä»¥åéƒ½åªè¦èµ‹å€¼
+	static TCHAR s[100]; // ´¢´æÄÚÈİÊı×é£¬³õÊ¼»¯Ò»´Î¾ÍĞĞ£¬ÒÔºó¶¼Ö»Òª¸³Öµ
 	_stprintf_s(s, sizeof(s) / sizeof(TCHAR), _T("%s"), content);
 	return s;
 }
 
-// ç»˜åˆ¶æ ‡é¢˜æ–‡å­—
+// »æÖÆ±êÌâÎÄ×Ö
 void drawTextTitie()
 {
-	nowText = setGameTextType(_T("===æ¥å§å¼€å§‹åšå¼ˆ==="), RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_TITLE);
+	nowText = setGameTextType(_T("===À´°É¿ªÊ¼²©ŞÄ==="), RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_TITLE);
 
-	// é€šè¿‡æ ‡é¢˜åˆå§‹åŒ–ä½ç½®ä»¥åŠæ¯è¡Œæ–‡å­—é«˜åº¦
-	static int firstFlag = true; // åªåˆå§‹åŒ–ä¸€æ¬¡
+	// Í¨¹ı±êÌâ³õÊ¼»¯Î»ÖÃÒÔ¼°Ã¿ĞĞÎÄ×Ö¸ß¶È
+	static int firstFlag = true; // Ö»³õÊ¼»¯Ò»´Î
 	if (firstFlag)
 	{
-		firstFlag = false; // åªç”¨æ‰§è¡Œä¸€æ¬¡è®¾ç½®èµ·å§‹ä½ç½®
+		firstFlag = false; // Ö»ÓÃÖ´ĞĞÒ»´ÎÉèÖÃÆğÊ¼Î»ÖÃ
 		textWeight = textwidth(nowText);
-		startTextX = (START_CHECKERBOARD_X - textWeight) / 2;	  // ä½¿æ ‡é¢˜æ–‡å­—ä½äºæ£‹ç›˜å·¦ä¾§ç©ºä½™å–ä½™çš„ä¸­é—´
-		startTextY = startTextX;								  // ç›®å‰å…ˆå†³å®šyåæ ‡èµ·å§‹åƒç´ è®¾ç½®ä¸ºå’Œxåæ ‡èµ·å§‹åƒç´ ä¸€æ ·
-		textHeight = (HEIGHT_WINDOW - 2 * startTextY) / TEXT_ROW; // è®¾ç½®æ–‡å­—åŒºåŸŸæ¯è¡Œå¤§å°
+		startTextX = (START_CHECKERBOARD_X - textWeight) / 2;	  // Ê¹±êÌâÎÄ×ÖÎ»ÓÚÆåÅÌ×ó²à¿ÕÓàÈ¡ÓàµÄÖĞ¼ä
+		startTextY = startTextX;								  // Ä¿Ç°ÏÈ¾ö¶¨y×ø±êÆğÊ¼ÏñËØÉèÖÃÎªºÍx×ø±êÆğÊ¼ÏñËØÒ»Ñù
+		textHeight = (HEIGHT_WINDOW - 2 * startTextY) / TEXT_ROW; // ÉèÖÃÎÄ×ÖÇøÓòÃ¿ĞĞ´óĞ¡
 	}
 
-	// æ¯æ¬¡è¾“å‡ºåˆ°æ ‡é¢˜éƒ½ä»0è¡Œå¼€å§‹
+	// Ã¿´ÎÊä³öµ½±êÌâ¶¼´Ó0ĞĞ¿ªÊ¼
 	textNowRow = 0;
 
 	outtextxy(startTextX, startTextY + textNowRow * textHeight, nowText);
 }
 
-// ç»˜åˆ¶æç¤ºæ–‡å­—
+// »æÖÆÌáÊ¾ÎÄ×Ö
 void drawTextPrompt()
 {
-	static TCHAR tempText[100]; // ç”¨äºæ‹¼æ¥
-	_stprintf_s(tempText, sizeof(tempText) / sizeof(TCHAR), _T("ç›®å‰çš„æ£‹å­æ˜¯: %s"), nowChessType == 'O' ? _T("ç™½æ£‹") : _T("é»‘æ£‹"));
+	static TCHAR tempText[100]; // ÓÃÓÚÆ´½Ó
+	_stprintf_s(tempText, sizeof(tempText) / sizeof(TCHAR), _T("Ä¿Ç°µÄÆå×ÓÊÇ: %s"), nowChessType == 'O' ? _T("°×Æå") : _T("ºÚÆå"));
 	nowText = setGameTextType(tempText, RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_PROMPT);
 
-	textNowRow++;							// å½“å‰è¡ŒåŠ ä¸€
-	int midowDx = centeringLRText(nowText); // å±…ä¸­xåé‡è¿”å›
-	int midowDy = centeringHWText(nowText); // å±…ä¸­yåé‡è¿”å›
+	textNowRow++;							// µ±Ç°ĞĞ¼ÓÒ»
+	int midowDx = centeringLRText(nowText); // ¾ÓÖĞxÆ«Á¿·µ»Ø
+	int midowDy = centeringHWText(nowText); // ¾ÓÖĞyÆ«Á¿·µ»Ø
 	outtextxy(startTextX + midowDx, startTextY + textNowRow * textHeight + midowDy, nowText);
 }
 
 void drawTextPicture_doubleManPlayChess(int startX, int startY)
 {
-	// å·¦è¾¹äººå¤´
+	// ×ó±ßÈËÍ·
 	int lheadX = 20, lheadY = 20, lheadR = 40;
 	circle(startX + lheadX, startY + lheadY, lheadR);
-	// å·¦è¾¹äººèº«å­
+	// ×ó±ßÈËÉí×Ó
 	int lbodyLen = 60;
 	line(startX + lheadX, startY + lheadY + lheadR, startX + lheadX, startY + lheadY + lheadR + lbodyLen);
-	// å·¦è¾¹äººæ‰‹1
+	// ×ó±ßÈËÊÖ1
 	int lhand1X = 120, lhand1Y = 10, lhandDy = lbodyLen / 2 - 10;
 	line(startX + lheadX, startY + lheadY + lheadR + lhandDy, startX + lheadX + lhand1X, startY + lheadY + lheadR + lhandDy + lhand1Y);
-	// å·¦è¾¹äººæ‰‹2
+	// ×ó±ßÈËÊÖ2
 	int lhand21X = 50, lhand21Y = 30;
 	int lhand22X = 41, lhand22Y = 55;
 	line(startX + lheadX, startY + lheadY + lheadR + lhandDy, startX + lheadX + lhand21X, startY + lheadY + lheadR + lhandDy + lhand21Y);
 	line(startX + lheadX + lhand21X, startY + lheadY + lheadR + lhandDy + lhand21Y, startX + lhand22X, startY + lhand22Y);
-	// å·¦è¾¹è…¿11
+	// ×ó±ßÍÈ11
 	int lleg11X = 60, lleg11Y = 5;
 	line(startX + lheadX, startY + lheadY + lheadR + lbodyLen, startX + lheadX + lleg11X, startY + lheadY + lheadR + lbodyLen + lleg11Y);
-	// å·¦è¾¹è…¿12
+	// ×ó±ßÍÈ12
 	int lleg12X = -5, lleg12Y = 70;
 	line(startX + lheadX + lleg11X, startY + lheadY + lheadR + lbodyLen + lleg11Y, startX + lheadX + lleg11X + lleg12X, startY + lheadY + lheadR + lbodyLen + lleg11Y + lleg12Y);
-	// å·¦è¾¹è…¿21
+	// ×ó±ßÍÈ21
 	int lleg21X = 40, lleg21Y = 15;
 	line(startX + lheadX, startY + lheadY + lheadR + lbodyLen, startX + lheadX + lleg21X, startY + lheadY + lheadR + lbodyLen + lleg21Y);
-	// å·¦è¾¹è…¿22
+	// ×ó±ßÍÈ22
 	int lleg22X = -5, lleg22Y = 60;
 	line(startX + lheadX + lleg21X, startY + lheadY + lheadR + lbodyLen + lleg21Y, startX + lheadX + lleg21X + lleg22X, startY + lheadY + lheadR + lbodyLen + lleg21Y + lleg22Y);
 
-	// å·¦è¾¹äººæ‹¿ç€çš„é»‘æ£‹
+	// ×ó±ßÈËÄÃ×ÅµÄºÚÆå
 	int lTakeChessX = startX + lheadX + lhand1X, lTakeChessY = startY + lheadY + lheadR + lhandDy + lhand1Y;
 	int lTakeChessR = 5;
 	setfillcolor(COLORREF(RGB(0, 0, 0)));
 	fillcircle(lTakeChessX, lTakeChessY, lTakeChessR);
 
-	// å·¦è¾¹æ¤…å­
+	// ×ó±ßÒÎ×Ó
 	int lseatAx = startX + lheadX - 20, lseatAy = startY + lheadY + lheadR + lbodyLen + 5;
 	int lseatWide = 40, lseatHigh = 75, lseatDy = 10, lseatDx = lseatDy / 2 * 5;
-	/*  å›¾åƒç‚¹å¦‚å›¾
+	/*  Í¼ÏñµãÈçÍ¼
 		  e ------ f
 		-		  -|
 	   a ------ d  |
@@ -471,10 +471,10 @@ void drawTextPicture_doubleManPlayChess(int startX, int startY)
 	};
 	polygon(pts, 13);
 
-	// æ¡Œå­
+	// ×À×Ó
 	int tableAX = startX + lheadX + 63, tableAY = startY + lheadY + lheadR + lbodyLen + lseatDy / 2;
 	int tableHiht = 80, tableWide = 140, tableDy = 40, tableDx = tableDy / 2 * 5;
-	/*  å›¾åƒç‚¹å¦‚å›¾
+	/*  Í¼ÏñµãÈçÍ¼
 		  e -------------- f
 		-	        	 - |
 	   a ------------- d   |
@@ -502,7 +502,7 @@ void drawTextPicture_doubleManPlayChess(int startX, int startY)
 	};
 	polygon(pts2, 13);
 
-	// ç”»æ¡Œå­ä¸Šçš„çº¿
+	// »­×À×ÓÉÏµÄÏß
 	int tableLineDx = tableWide / 10, tableLineDy = tableDy / 10;
 	for (int i = 1; i < 10; i++)
 	{
@@ -510,10 +510,10 @@ void drawTextPicture_doubleManPlayChess(int startX, int startY)
 		line(tableAX + i * tableLineDy / 2 * 5, tableAY - i * tableLineDy, tableAX + i * tableLineDy / 2 * 5 + tableWide, tableAY - i * tableLineDy);
 	}
 
-	// å³è¾¹æ¤…å­
+	// ÓÒ±ßÒÎ×Ó
 	int rseatAX = tableAX + tableWide + 63, rseatAY = tableAY;
 	int rseatHigh = 75, rseatWide = 40, rseatDy = 10, rseatDx = rseatDy / 2 * 5;
-	/*  å›¾åƒç‚¹å¦‚å›¾
+	/*  Í¼ÏñµãÈçÍ¼
 		  e ------ f
 		-		  -|
 	   a ------ d  |
@@ -543,37 +543,37 @@ void drawTextPicture_doubleManPlayChess(int startX, int startY)
 	};
 	fillpolygon(pts3, 13);
 
-	// å³è¾¹èº«å­
+	// ÓÒ±ßÉí×Ó
 	int rbodyLen = 60;
 	line(rseatAX + rseatWide, rseatAY - rseatDy / 2, rseatAX + rseatWide, rseatAY - rseatDy / 2 - rbodyLen);
 
-	// å³è¾¹äººå¤´
+	// ÓÒ±ßÈËÍ·
 	int rheadR = 40, rheadDx = rseatAX + rseatWide, rheadDy = rseatAY - rseatDy / 2 - rbodyLen - rheadR;
 	circle(rheadDx, rheadDy, rheadR);
 
-	// å³è¾¹è„š11
+	// ÓÒ±ß½Å11
 	int rleg11X = 20, rleg11Y = 18;
 	line(rseatAX + rseatWide, rseatAY - rseatDy / 2, rseatAX + rseatWide - rleg11X, rseatAY - rseatDy / 2 - rleg11Y);
 
-	// å³è¾¹è„š12
+	// ÓÒ±ß½Å12
 	int rleg12X = 30, rleg12Y = 85;
 	line(rseatAX + rseatWide - rleg11X, rseatAY - rseatDy / 2 - rleg11Y, rseatAX + rseatWide - rleg11X - rleg12X, rseatAY - rseatDy / 2 - rleg11Y + rleg12Y);
 
-	// å³è¾¹è„š21
+	// ÓÒ±ß½Å21
 	int rleg21X = -15, rleg21Y = 1;
 	line(rseatAX + rseatWide, rseatAY - rseatDy / 2, rseatAX + rseatWide - rleg12X + rleg21X, rseatAY - rseatDy / 2 + rleg21Y);
 
-	// å³è¾¹è„š22
+	// ÓÒ±ß½Å22
 	int rleg22X = 5, rleg22Y = 25;
 	line(rseatAX + rseatWide - rleg12X + rleg21X, rseatAY - rseatDy / 2 + rleg21Y, rseatAX + rseatWide - rleg12X + rleg21X + rleg22X, rseatAY - rseatDy / 2 + rleg21Y + rleg22Y);
 
-	// å³è¾¹æ‰‹
+	// ÓÒ±ßÊÖ
 	int rhandStartX = rseatAX + rseatWide, rhandStartY = rseatAY - rseatDy / 2 - rbodyLen / 2 - 10;
-	// å³è¾¹æ‰‹1
+	// ÓÒ±ßÊÖ1
 	int rhand1X = rseatAX + rseatWide - rleg11X - rleg12X, rhand1Y = rseatAY - rseatDy / 2 - rleg11Y + rleg12Y;
 	line(rhandStartX, rhandStartY, rhand1X, rhand1Y);
 
-	// å³è¾¹æ‰‹2
+	// ÓÒ±ßÊÖ2
 	int rhand2X = rseatAX + rseatDx + rseatWide - 15, rhand2Y = rseatAY - rseatDy + 3;
 	line(rhandStartX, rhandStartY, rhand2X, rhand2Y);
 }
@@ -582,60 +582,60 @@ void drawTextPicture()
 {
 	nowText = setGameTextType(_T(""), RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_OTHER);
 
-	textNowRow++; // å½“å‰è¡ŒåŠ ä¸€
+	textNowRow++; // µ±Ç°ĞĞ¼ÓÒ»
 	int midowDx = 0;
-	int midowDy = 0; // å›¾ç‰‡ä¸éœ€è¦xyå±…ä¸­
+	int midowDy = 0; // Í¼Æ¬²»ĞèÒªxy¾ÓÖĞ
 
 	outtextxy(startTextX + midowDx, startTextY + textNowRow * textHeight + midowDy, nowText);
 	drawTextPicture_doubleManPlayChess(startTextX + midowDx, startTextY + textNowRow * textHeight + midowDy);
 
-	textNowRow += 2; // ä¸ºå›¾ç‰‡ç•™å‡ºå……è¶³ç©ºé—´
+	textNowRow += 2; // ÎªÍ¼Æ¬Áô³ö³ä×ã¿Õ¼ä
 }
 
 void drawTextScore()
 {
-	static TCHAR tempText[100]; // ç”¨äºæ‹¼æ¥
-	_stprintf_s(tempText, sizeof(tempText) / sizeof(TCHAR), _T("é»‘:%d  Vs  ç™½:%d"), blackScore, whiteScore);
+	static TCHAR tempText[100]; // ÓÃÓÚÆ´½Ó
+	_stprintf_s(tempText, sizeof(tempText) / sizeof(TCHAR), _T("ºÚ:%d  Vs  °×:%d"), blackScore, whiteScore);
 	nowText = setGameTextType(tempText, RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_OTHER);
 
-	textNowRow++; // å½“å‰è¡ŒåŠ ä¸€
+	textNowRow++; // µ±Ç°ĞĞ¼ÓÒ»
 	int midowDx = centeringLRText(nowText);
-	int midowDy = centeringHWText(nowText); // å±…ä¸­yåé‡è¿”å›
+	int midowDy = centeringHWText(nowText); // ¾ÓÖĞyÆ«Á¿·µ»Ø
 	outtextxy(startTextX + midowDx, startTextY + textNowRow * textHeight + midowDy, nowText);
 }
 
 void drawTextWhiteTime()
 {
-	static TCHAR tempText[100]; // ç”¨äºæ‹¼æ¥
-	_stprintf_s(tempText, sizeof(tempText) / sizeof(TCHAR), _T("ç™½ %02d:%02d"), whiteChessCDTime.m, whiteChessCDTime.s);
+	static TCHAR tempText[100]; // ÓÃÓÚÆ´½Ó
+	_stprintf_s(tempText, sizeof(tempText) / sizeof(TCHAR), _T("°× %02d:%02d"), whiteChessCDTime.m, whiteChessCDTime.s);
 	nowText = setGameTextType(tempText, RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_OTHER);
 
-	textNowRow++; // å½“å‰è¡ŒåŠ ä¸€
+	textNowRow++; // µ±Ç°ĞĞ¼ÓÒ»
 	int midowDx = centeringLRText(nowText);
-	int midowDy = centeringHWText(nowText); // å±…ä¸­yåé‡è¿”å›
+	int midowDy = centeringHWText(nowText); // ¾ÓÖĞyÆ«Á¿·µ»Ø
 	outtextxy(startTextX + midowDx, startTextY + textNowRow * textHeight + midowDy, nowText);
 }
 
 void drawTextBlackTime()
 {
-	static TCHAR tempText[100]; // ç”¨äºæ‹¼æ¥
-	_stprintf_s(tempText, sizeof(tempText) / sizeof(TCHAR), _T("é»‘ %02d:%02d"), blackChessCDTime.m, blackChessCDTime.s);
+	static TCHAR tempText[100]; // ÓÃÓÚÆ´½Ó
+	_stprintf_s(tempText, sizeof(tempText) / sizeof(TCHAR), _T("ºÚ %02d:%02d"), blackChessCDTime.m, blackChessCDTime.s);
 	nowText = setGameTextType(tempText, RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_OTHER);
 
-	textNowRow++; // å½“å‰è¡ŒåŠ ä¸€
+	textNowRow++; // µ±Ç°ĞĞ¼ÓÒ»
 	int midowDx = centeringLRText(nowText);
-	int midowDy = centeringHWText(nowText); // å±…ä¸­yåé‡è¿”å›
+	int midowDy = centeringHWText(nowText); // ¾ÓÖĞyÆ«Á¿·µ»Ø
 	outtextxy(startTextX + midowDx, startTextY + textNowRow * textHeight + midowDy, nowText);
 }
 
-// ç»˜åˆ¶æ‚”æ£‹æŒ‰é’®æ–‡å­—
+// »æÖÆ»ÚÆå°´Å¥ÎÄ×Ö
 void drawTextStepBack()
 {
-	nowText = setGameTextType(_T("æ‚”æ£‹"), RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_OTHER);
+	nowText = setGameTextType(_T("»ÚÆå"), RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_OTHER);
 
-	textNowRow++; // å½“å‰è¡ŒåŠ ä¸€
+	textNowRow++; // µ±Ç°ĞĞ¼ÓÒ»
 	int midowDx = centeringLRText(nowText);
-	int midowDy = centeringHWText(nowText); // å±…ä¸­yåé‡è¿”å›
+	int midowDy = centeringHWText(nowText); // ¾ÓÖĞyÆ«Á¿·µ»Ø
 
 	static int startX = startTextX + midowDx;
 	static int startY = startTextY + textNowRow * textHeight + midowDy;
@@ -651,20 +651,20 @@ void chessUndo()
 	if (gameBoard[lastChessPos.row][lastChessPos.col] == '-')
 		return;
 
-	// ä»æ£‹ç›˜æ¸…é™¤ä¸Šä¸€æ¬¡ä¸‹çš„æ£‹å­
+	// ´ÓÆåÅÌÇå³ıÉÏÒ»´ÎÏÂµÄÆå×Ó
 	gameBoard[lastChessPos.row][lastChessPos.col] = '-';
-	// æ›´æ–°å½“å‰ä¸‹æ£‹ç±»å‹
+	// ¸üĞÂµ±Ç°ÏÂÆåÀàĞÍ
 	turnChessType();
 }
 
-// ç»˜åˆ¶è®¤è¾“æŒ‰é’®æ–‡å­—
+// »æÖÆÈÏÊä°´Å¥ÎÄ×Ö
 void drawTextAdmitDefeat()
 {
-	nowText = setGameTextType(_T("è®¤è¾“"), RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_OTHER);
+	nowText = setGameTextType(_T("ÈÏÊä"), RGB(0, 0, 0), HEIGHT_WINDOW / TEXT_OTHER);
 
-	textNowRow++; // å½“å‰è¡ŒåŠ ä¸€
+	textNowRow++; // µ±Ç°ĞĞ¼ÓÒ»
 	int midowDx = centeringLRText(nowText);
-	int midowDy = centeringHWText(nowText); // å±…ä¸­yåé‡è¿”å›
+	int midowDy = centeringHWText(nowText); // ¾ÓÖĞyÆ«Á¿·µ»Ø
 
 	static int startX = startTextX + midowDx;
 	static int startY = startTextY + textNowRow * textHeight + midowDy;
@@ -678,7 +678,7 @@ void drawTextAdmitDefeat()
 
 void gameAdmitDefeat()
 {
-	if (nowChessType == 'O') // å¦‚æœç°åœ¨æ˜¯ç™½æ£‹åˆ™é»‘æ£‹èµ¢äº†
+	if (nowChessType == 'O') // Èç¹ûÏÖÔÚÊÇ°×ÆåÔòºÚÆåÓ®ÁË
 	{
 		gameResult = 2;
 	}
@@ -689,10 +689,10 @@ void gameAdmitDefeat()
 	running = false;
 }
 
-// ç»˜åˆ¶æ–‡æœ¬
+// »æÖÆÎÄ±¾
 void drawText()
 {
-	drawTextTitie(); // è¿™ä¸ªå¿…é¡»åœ¨ç¬¬ä¸€å› ä¸ºæ–‡å­—èµ·å§‹ä½ç½®æ˜¯åœ¨è¿™ä¸ªé‡Œé¢è®¾ç½®çš„
+	drawTextTitie(); // Õâ¸ö±ØĞëÔÚµÚÒ»ÒòÎªÎÄ×ÖÆğÊ¼Î»ÖÃÊÇÔÚÕâ¸öÀïÃæÉèÖÃµÄ
 	drawTextPicture();
 	drawTextPrompt();
 	drawTextStepBack();
@@ -702,25 +702,25 @@ void drawText()
 	drawTextScore();
 }
 
-// æ¸²æŸ“
+// äÖÈ¾
 void gameDraw()
 {
-	BeginBatchDraw(); // å¼€å§‹ç”»å›¾
-	cleardevice();	  // æ¸…å±
+	BeginBatchDraw(); // ¿ªÊ¼»­Í¼
+	cleardevice();	  // ÇåÆÁ
 	drawGridding();
 	drawData();
 	drawText();
-	EndBatchDraw(); // æ˜¾ç¤ºç”»å›¾
+	EndBatchDraw(); // ÏÔÊ¾»­Í¼
 	if (!running)
 		showWinner();
 }
 
-// è¯»å–æ•°æ®
+// ¶ÁÈ¡Êı¾İ
 void gameRand()
 {
 	if (!running)
 		return;
-	if (GetAsyncKeyState(VK_ESCAPE)) // ESCè¢«æŒ‰ä¸‹
+	if (GetAsyncKeyState(VK_ESCAPE)) // ESC±»°´ÏÂ
 	{
 		closegraph();
 		exit(0);
@@ -729,7 +729,7 @@ void gameRand()
 	isClick = false;
 	while (peekmessage(&msg))
 	{
-		if (msg.message == WM_MOUSEMOVE) // é¼ æ ‡ç§»åŠ¨ä¿¡æ¯
+		if (msg.message == WM_MOUSEMOVE) // Êó±êÒÆ¶¯ĞÅÏ¢
 		{
 			mouseX = msg.x;
 			mouseY = msg.y;
@@ -742,7 +742,7 @@ void gameRand()
 	}
 }
 
-// æ£€æµ‹æ£‹å­æ˜¯å¦è¶Šç•Œ
+// ¼ì²âÆå×ÓÊÇ·ñÔ½½ç
 bool isOverBorder(int &row, int &y)
 {
 	if (row < 0 || row >= ROWS_WINDOW)
@@ -752,7 +752,7 @@ bool isOverBorder(int &row, int &y)
 	return false;
 }
 
-// æ£€æµ‹æ˜¯å¦èƒœåˆ©
+// ¼ì²âÊÇ·ñÊ¤Àû
 int chessSum(int row, int col, int dx, int dy)
 {
 	int sum = 0;
@@ -769,7 +769,7 @@ int chessSum(int row, int col, int dx, int dy)
 	}
 }
 
-// æ£€æµ‹æ˜¯å¦ç»“æŸ
+// ¼ì²âÊÇ·ñ½áÊø
 bool gameChessOver(int row, int col)
 {
 	int dir[4][2] = {{1, 0}, {0, 1}, {1, 1}, {1, -1}};
@@ -802,7 +802,7 @@ bool gameChessOver(int row, int col)
 
 bool gameTimeOver()
 {
-	// å€’è®¡æ—¶ç»“æŸçš„è¾“
+	// µ¹¼ÆÊ±½áÊøµÄÊä
 	if (blackChessCDTime.h <= 0 && blackChessCDTime.m <= 0 && blackChessCDTime.s <= 0)
 	{
 		gameResult = 1;
@@ -818,14 +818,14 @@ bool gameTimeOver()
 
 void countdownProcess()
 {
-	// æ¯è¿‡ä¸€ç§’ç›®å‰å€’è®¡æ—¶å‡ä¸€
+	// Ã¿¹ıÒ»ÃëÄ¿Ç°µ¹¼ÆÊ±¼õÒ»
 	if (time(0) - nowTimeSecondCD >= 1)
 	{
 		nowTimeSecondCD = time(0);
 		--(*nowCDTime);
 	}
 
-	// æ£€æµ‹å€’è®¡æ—¶æœ‰æ²¡æœ‰ç»“æŸ
+	// ¼ì²âµ¹¼ÆÊ±ÓĞÃ»ÓĞ½áÊø
 	if (running != false)
 		running = !gameTimeOver();
 }
@@ -835,26 +835,26 @@ void chessBoardProcess()
 	if (!running)
 		return;
 
-	// é¼ æ ‡æ˜¯å¦ç‚¹å‡»
+	// Êó±êÊÇ·ñµã»÷
 	if (!isClick)
 		return;
-	// åˆ¤æ–­é¼ æ ‡æ˜¯å¦è¶Šç•Œæ£‹ç›˜
+	// ÅĞ¶ÏÊó±êÊÇ·ñÔ½½çÆåÅÌ
 	if (mouseX < START_CHECKERBOARD_X || mouseX > START_CHECKERBOARD_X + WIDTH_CHECKERBOARD - col_size ||
 		mouseY < START_CHECKERBOARD_Y || mouseY > START_CHECKERBOARD_Y + HEIGHT_CHECKERBOARD - row_size)
 		return;
-	// é€šè¿‡å‘ä¸‹å–æ•´å¾—å‡ºï¼Œé¼ æ ‡ç‚¹å‡»æ–¹å—å·¦ä¸Šè§’ç‚¹çš„è¡Œæ•°
+	// Í¨¹ıÏòÏÂÈ¡ÕûµÃ³ö£¬Êó±êµã»÷·½¿é×óÉÏ½ÇµãµÄĞĞÊı
 	int zeroRow = (mouseY - START_CHECKERBOARD_Y) / row_size;
 	int zeroCol = (mouseX - START_CHECKERBOARD_X) / col_size;
 
-	// æ±‚å‡ºå·¦ä¸Šè§’ç‚¹çš„åƒç´ åæ ‡
+	// Çó³ö×óÉÏ½ÇµãµÄÏñËØ×ø±ê
 	int zeroSitRow = zeroRow * row_size + START_CHECKERBOARD_Y;
 	int zeroSitcol = zeroCol * col_size + START_CHECKERBOARD_X;
 
-	// åˆå§‹åŒ–ä¸‹æ£‹ä½ç½®ï¼ˆé»˜è®¤ä¸ºå·¦ä¸Šè§’ï¼‰
+	// ³õÊ¼»¯ÏÂÆåÎ»ÖÃ£¨Ä¬ÈÏÎª×óÉÏ½Ç£©
 	int row = zeroRow;
 	int col = zeroCol;
 
-	// æ ¹æ®ä½ç½®åˆ¤æ–­å®é™…æ´›æ£‹ç‚¹(è¶Šç•Œçš„é¼ æ ‡ä¿¡æ¯ä¸ä¼šè¢«è¯»å–ï¼Œæ‰€ä»¥ä¸ä¼šè¶Šç•Œ)
+	// ¸ù¾İÎ»ÖÃÅĞ¶ÏÊµ¼ÊÂåÆåµã(Ô½½çµÄÊó±êĞÅÏ¢²»»á±»¶ÁÈ¡£¬ËùÒÔ²»»áÔ½½ç)
 	if (mouseY - zeroSitRow > row_size / 2)
 		row += 1;
 	if (mouseX - zeroSitcol > col_size / 2)
@@ -864,36 +864,36 @@ void chessBoardProcess()
 		return;
 	gameBoard[row][col] = nowChessType;
 
-	// ä¸Šä¸€ä¸ªæ£‹å­ç»˜åˆ¶çš„è¡Œåˆåˆ—
+	// ÉÏÒ»¸öÆå×Ó»æÖÆµÄĞĞºÏÁĞ
 	lastChessPos.row = row;
 	lastChessPos.col = col;
 
-	chessCount++; // æ£‹å­ä¸ªæ•°åŠ ä¸€
+	chessCount++; // Æå×Ó¸öÊı¼ÓÒ»
 	if (running != false)
-		running = !gameChessOver(row, col); // æ£€æµ‹æ˜¯å¦ç»“æŸ
+		running = !gameChessOver(row, col); // ¼ì²âÊÇ·ñ½áÊø
 	turnChessType();
 }
 
-// æ•°æ®å¤„ç†
+// Êı¾İ´¦Àí
 void gameProcess()
 {
 
-	// æ£‹ç›˜æ•°æ®å¤„ç†
+	// ÆåÅÌÊı¾İ´¦Àí
 	chessBoardProcess();
 
-	// å€’è®¡æ—¶å¤„ç†
+	// µ¹¼ÆÊ±´¦Àí
 	countdownProcess();
 }
 
-// æ§åˆ¶å¸§ç‡
+// ¿ØÖÆÖ¡ÂÊ
 void gamesleep()
 {
 	now_time = GetTickCount();
-	DWORD delta_ms = now_time - start_time; // ç›®å‰è¿è¡Œäº†å¤šå°‘æ—¶é—´
-	DWORD frameMS = 1000 / GAME_FRAME;		// ä¸€å¸§å¤šå°‘æ¯«ç§’
+	DWORD delta_ms = now_time - start_time; // Ä¿Ç°ÔËĞĞÁË¶àÉÙÊ±¼ä
+	DWORD frameMS = 1000 / GAME_FRAME;		// Ò»Ö¡¶àÉÙºÁÃë
 	if (delta_ms < frameMS)
 	{
-		Sleep(frameMS - delta_ms); // ä¼‘çœ åˆ°ä¸€å¸§çš„æ—¶é—´
+		Sleep(frameMS - delta_ms); // ĞİÃßµ½Ò»Ö¡µÄÊ±¼ä
 	}
 }
 
@@ -916,7 +916,7 @@ void gamesleep()
 //	return 0;
 // }
 
-// ä½œä¸ºwindowGUIå‘½ä»¤ç¨‹åºçš„å…¥å£ï¼Œè¿˜è¦ä¿®æ”¹é¡¹ç›®å±æ€§çš„å­ç³»ç»Ÿï¼Œå¯ä»¥å®ç°ä¸è¾“å‡ºå‘½ä»¤è¡Œ
+// ×÷ÎªwindowGUIÃüÁî³ÌĞòµÄÈë¿Ú£¬»¹ÒªĞŞ¸ÄÏîÄ¿ÊôĞÔµÄ×ÓÏµÍ³£¬¿ÉÒÔÊµÏÖ²»Êä³öÃüÁîĞĞ
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPSTR, int)
 {
 	init();
