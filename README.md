@@ -35,19 +35,8 @@
 # 克隆仓库
 git clone https://github.com/AbyssFerry/cpp-tictactoe.git
 cd tictactoe
-
-# 安装依赖(项目本身自带不用下载)
-# 1. 从EasyX官网下载安装包
-# 2. 将 include/easyx.h 和 lib/libeasyx.a 放入项目对应目录
-
-# 编译项目
-make all
-
-# 运行游戏
 ./build/Tictactoe.exe
 ```
-
-> **注意**：源码编译可能存在文字编码问题，建议直接使用预编译版本
 
 ### 使用预编译版本
 
