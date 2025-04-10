@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "algorithm": "cpp"
+    },
+    "files.autoGuessEncoding": false,
+    "[cpp]": {
+        "files.encoding": "gbk"
+    },
+    "[md]":{
+        "files.encoding": "utf8"
+    },
+}
